@@ -49,7 +49,7 @@ public class AnimController : MonoBehaviour
         {
             anim.Play("idle");
         }
-        transform.Translate(movement * speed * Time.deltaTime, Space.Self);
+        transform.Translate(movement * speed * Time.deltaTime, Space.World);
         
     }
 }
