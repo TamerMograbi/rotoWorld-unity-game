@@ -4,13 +4,16 @@ using UnityEngine;
 
 public class AnimController : MonoBehaviour
 {
-
+    enum gravityDirection { DOWN, LEFT, RIGHT, UP };
     public Animator anim;
     private Rigidbody rb;
     float speed;
     public float moveVertical;
     public float moveHorizontal;
     float maxJump;
+    gravityDirection gravityDir;
+    public float angle;
+    bool SpacePressed;
     // Use this for initialization
     void Start()
     {
@@ -20,6 +23,10 @@ public class AnimController : MonoBehaviour
         moveVertical = 0;
         moveHorizontal = 0;
         maxJump = 8;
+        rb.useGravity = false;
+        gravityDir = gravityDirection.DOWN;
+        angle = 0;
+        SpacePressed = false;
     }
 
     // Update is called once per frame
@@ -28,6 +35,28 @@ public class AnimController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
         {
             UnityEngine.SceneManagement.SceneManager.LoadScene("Level1");
+        }
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            gravityDir = gravityDirection.UP;
+            SpacePressed = true;
+        }
+
+        //We can't have this code in the above if as lerp needs to keep working also after the key space gets pressed and only stop
+        //when a 180 degrees rotation has been reached.
+        if(SpacePressed)
+        {
+            angle = Mathf.LerpAngle(angle, 180, 8 * Time.deltaTime);
+            
+            //stop rotation when the character is upside down
+            if (transform.rotation.eulerAngles.x < 180)
+            {
+                transform.Rotate(new Vector3(angle * Mathf.Deg2Rad, 0, 0));
+            }
+            else
+            {
+                SpacePressed = false;
+            }
         }
     }
     private void FixedUpdate()
@@ -45,6 +74,31 @@ public class AnimController : MonoBehaviour
             anim.Play("idle");
         }
         transform.Translate(movement * speed * Time.deltaTime, Space.World);
-        
+        rb.AddForce(getCurrentGravity());
     }
+
+    private Vector3 getCurrentGravity()
+    {
+        switch (gravityDir)
+        {
+            case gravityDirection.DOWN:
+                {
+                    return new Vector3(0, -Physics.gravity.magnitude, 0);
+                }
+            case gravityDirection.UP:
+                {
+                    return new Vector3(0, Physics.gravity.magnitude, 0);
+                }
+            case gravityDirection.LEFT:
+                {
+                    return new Vector3(-Physics.gravity.magnitude, 0, 0);
+                }
+            default://RIGHT
+                {
+                    return new Vector3(Physics.gravity.magnitude, 0, 0);
+                }
+        }
+
+    }
+
 }
