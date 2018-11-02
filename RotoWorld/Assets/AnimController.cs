@@ -37,12 +37,7 @@ public class AnimController : MonoBehaviour
         Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
         if (moveVertical != 0 || moveHorizontal != 0)
         {
-            //transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(movement), 0.15F);
-            //Vector3 faceRot = Vector3.Normalize(movement);
-            //if (faceRot != Vector3.zero)
-            //{
-            //    transform.forward = faceRot;
-            //}
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(movement), 0.15F);
             anim.Play("run");
         }
         else
