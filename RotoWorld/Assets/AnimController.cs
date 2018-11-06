@@ -13,7 +13,16 @@ public class AnimController : MonoBehaviour
     float maxJump;
     gravityDirection gravityDir;
     public float angle;
-    bool SpacePressed;
+    bool CtrlPressed;
+
+    public LayerMask groundLayers;
+    public BoxCollider cldr;
+    private float jumpAccel;
+    private float gravAccel;
+    private float verticalVelocity = 0.0f;
+    private Vector3[] gravVectors = { new Vector3(0, 1, 0), new Vector3(0, -1, 0), new Vector3(-1, 0, 0), new Vector3(1, 0, 0) }; // Down, Up, Left, Right
+    private bool jumping = false;
+
     // Use this for initialization
     void Start()
     {
@@ -26,7 +35,12 @@ public class AnimController : MonoBehaviour
         rb.useGravity = false;
         gravityDir = gravityDirection.DOWN;
         angle = 0;
-        SpacePressed = false;
+        CtrlPressed = false;
+
+        cldr = GetComponent<BoxCollider>();
+        jumpAccel = Physics.gravity.magnitude * 10;
+        gravAccel = Physics.gravity.magnitude;
+        
     }
 
     // Update is called once per frame
@@ -36,15 +50,19 @@ public class AnimController : MonoBehaviour
         {
             UnityEngine.SceneManagement.SceneManager.LoadScene("Level1");
         }
-        if(Input.GetKeyDown(KeyCode.Space))
+        if(Input.GetKeyDown(KeyCode.LeftControl))
         {
             gravityDir = gravityDirection.UP;
-            SpacePressed = true;
+            CtrlPressed = true;
         }
+        if (Input.GetKeyDown(KeyCode.Space) && IsGrounded())
+            jumping = true;
+        else
+            jumping = false;
 
         //We can't have this code in the above if as lerp needs to keep working also after the key space gets pressed and only stop
         //when a 180 degrees rotation has been reached.
-        if(SpacePressed)
+        if(CtrlPressed)
         {
             angle = Mathf.LerpAngle(angle, 180, 8 * Time.deltaTime);
             
@@ -55,7 +73,7 @@ public class AnimController : MonoBehaviour
             }
             else
             {
-                SpacePressed = false;
+                CtrlPressed = false;
             }
         }
     }
@@ -74,10 +92,19 @@ public class AnimController : MonoBehaviour
             anim.Play("idle");
         }
         transform.Translate(movement * speed * Time.deltaTime, Space.World);
-        rb.AddForce(getCurrentGravity());
+        if (IsGrounded())
+        {
+            verticalVelocity = -gravAccel * Time.deltaTime;
+            if (jumping)
+                verticalVelocity = jumpAccel;
+        }
+        else
+            verticalVelocity -= gravAccel * Time.deltaTime;
+
+        rb.AddForce(getDirectionVector() * verticalVelocity);
     }
 
-    private Vector3 getCurrentGravity()
+    private Vector3 getCurrentGravity() // Currently Not In Use
     {
         switch (gravityDir)
         {
@@ -97,8 +124,34 @@ public class AnimController : MonoBehaviour
                 {
                     return new Vector3(Physics.gravity.magnitude, 0, 0);
                 }
+
+                //still need cases for front and back
+        }
+    }
+
+    private Vector3 getDirectionVector()
+    {
+        switch (gravityDir)
+        {
+            case gravityDirection.DOWN:
+                return gravVectors[0];
+            case gravityDirection.UP:
+                return gravVectors[1];
+            case gravityDirection.LEFT:
+                return gravVectors[2];
+            default://RIGHT
+                return gravVectors[3];
+
+            //still need cases for front and back
         }
 
+    }
+
+    // Checks if player is on the ground (currently only works if gravity is pointing down) - Justin
+    // https://www.youtube.com/watch?v=vdOFUFMiPDU - video I used as a jumping tutorial
+    private bool IsGrounded()
+    {
+        return Physics.CheckCapsule(cldr.bounds.center, new Vector3(cldr.bounds.center.x, cldr.bounds.min.y, cldr.bounds.center.z), Mathf.Min(cldr.size.x, cldr.size.z)/2 * .8f, groundLayers);
     }
 
 }
