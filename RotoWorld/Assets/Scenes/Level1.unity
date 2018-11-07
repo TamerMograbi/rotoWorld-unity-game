@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.45142096, g: 0.5008096, b: 0.57174915, a: 1}
+  m_IndirectSpecularColor: {r: 0.45142096, g: 0.50080955, b: 0.5717491, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -420,8 +420,8 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 534669902}
-  m_LocalRotation: {x: 0.2588191, y: -0, z: -0, w: 0.9659258}
-  m_LocalPosition: {x: 0, y: 0.42999995, z: -2}
+  m_LocalRotation: {x: 0.2588191, y: 0, z: 0, w: 0.9659258}
+  m_LocalPosition: {x: 0, y: -1.57, z: -2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -524,6 +524,11 @@ Transform:
   m_Father: {fileID: 1964931682}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  player: {fileID: 1261722900}
+  gravityDir: 0
+  prevGravityDir: 0
+  angle: 0
+  rotated: 0
 --- !u!1 &716845710
 GameObject:
   m_ObjectHideFlags: 0
@@ -1793,6 +1798,23 @@ MeshFilter:
   m_GameObject: {fileID: 1596664774}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &1675066498
+  m_GameObject: {fileID: 1261722900}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bff114ac7cab3f344adb2d71d9a0c0de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  anim: {fileID: 0}
+  moveVertical: 0
+  moveHorizontal: 0
+  angle: 0
+  groundLayers:
+    serializedVersion: 2
+    m_Bits: 1
+  cldr: {fileID: 0}
+  verticalVelocity: 0
+  isGrounded: 0
+--- !u!1 &1350448288
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
