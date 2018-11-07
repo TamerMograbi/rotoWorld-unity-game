@@ -19,13 +19,17 @@ public class AnimController : MonoBehaviour
     public BoxCollider cldr;
     private float jumpAccel;
     private float gravAccel;
-    private float verticalVelocity = 0.0f;
+    public float verticalVelocity = 0.0f;
     private Vector3[] gravVectors = { new Vector3(0, 1, 0), new Vector3(0, -1, 0), new Vector3(-1, 0, 0), new Vector3(1, 0, 0) }; // Down, Up, Left, Right
     private bool jumping = false;
+    public bool isGrounded = false;
+    private bool canJump = true;
+    private float finishedTime = .3f;
 
     // Use this for initialization
     void Start()
     {
+        //Time.timeScale = .25f;
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
         speed = 2;
@@ -38,7 +42,7 @@ public class AnimController : MonoBehaviour
         CtrlPressed = false;
 
         cldr = GetComponent<BoxCollider>();
-        jumpAccel = Physics.gravity.magnitude * 10;
+        jumpAccel = Physics.gravity.magnitude / 2;
         gravAccel = Physics.gravity.magnitude;
         
     }
@@ -50,13 +54,15 @@ public class AnimController : MonoBehaviour
         {
             UnityEngine.SceneManagement.SceneManager.LoadScene("Level1");
         }
-        if(Input.GetKeyDown(KeyCode.LeftControl))
+        if (Input.GetKeyDown(KeyCode.LeftControl))
         {
             gravityDir = gravityDirection.UP;
             CtrlPressed = true;
         }
-        if (Input.GetKeyDown(KeyCode.Space) && IsGrounded())
+        if (Input.GetKeyDown(KeyCode.Space) && IsGrounded()) {     
+            StartCoroutine(JumpTimer());
             jumping = true;
+        }
         else
             jumping = false;
 
@@ -79,6 +85,7 @@ public class AnimController : MonoBehaviour
     }
     private void FixedUpdate()
     {
+        isGrounded = IsGrounded();
         moveVertical = Input.GetAxis("Vertical");
         moveHorizontal = Input.GetAxis("Horizontal");
         Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
@@ -94,14 +101,21 @@ public class AnimController : MonoBehaviour
         transform.Translate(movement * speed * Time.deltaTime, Space.World);
         if (IsGrounded())
         {
-            verticalVelocity = -gravAccel * Time.deltaTime;
-            if (jumping)
+            /*verticalVelocity = -gravAccel * Time.deltaTime;
+            if (jumping && canJump)
+            {
                 verticalVelocity = jumpAccel;
+                jumping = false;
+                canJump = false;
+            }*/
+            if (jumping && canJump)
+                rb.AddForce(new Vector3(0, 1, 0) * jumpAccel, ForceMode.Impulse);
         }
-        else
+        /*else
             verticalVelocity -= gravAccel * Time.deltaTime;
 
-        rb.AddForce(getDirectionVector() * verticalVelocity);
+        rb.AddForce(getDirectionVector() * verticalVelocity);*/
+        rb.AddForce(getCurrentGravity());
     }
 
     private Vector3 getCurrentGravity() // Currently Not In Use
@@ -147,11 +161,22 @@ public class AnimController : MonoBehaviour
 
     }
 
+    public IEnumerator JumpTimer()
+    {
+        while (finishedTime > 0)
+        {
+            yield return new WaitForSeconds(0.1f);
+            finishedTime -= 0.1f;
+        }
+        finishedTime = .3f;
+        canJump = true;
+    }
+
     // Checks if player is on the ground (currently only works if gravity is pointing down) - Justin
     // https://www.youtube.com/watch?v=vdOFUFMiPDU - video I used as a jumping tutorial
     private bool IsGrounded()
     {
-        return Physics.CheckCapsule(cldr.bounds.center, new Vector3(cldr.bounds.center.x, cldr.bounds.min.y, cldr.bounds.center.z), Mathf.Min(cldr.size.x, cldr.size.z)/2 * .8f, groundLayers);
+        return Physics.CheckCapsule(cldr.bounds.center, new Vector3(cldr.bounds.center.x, cldr.bounds.min.y, cldr.bounds.center.z), Mathf.Min(cldr.size.x, cldr.size.z)/2 * .25f, groundLayers);
     }
 
 }
