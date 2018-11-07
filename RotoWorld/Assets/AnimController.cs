@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AnimController : MonoBehaviour
 {
-    enum gravityDirection { DOWN, LEFT, RIGHT, UP };
+    public enum gravityDirection { DOWN, LEFT, RIGHT, UP };
     public Animator anim;
     private Rigidbody rb;
     float speed;
@@ -177,6 +177,11 @@ public class AnimController : MonoBehaviour
     private bool IsGrounded()
     {
         return Physics.CheckCapsule(cldr.bounds.center, new Vector3(cldr.bounds.center.x, cldr.bounds.min.y, cldr.bounds.center.z), Mathf.Min(cldr.size.x, cldr.size.z)/2 * .25f, groundLayers);
+    }
+
+    public gravityDirection getGravityDir()
+    {
+        return gravityDir;
     }
 
 }
