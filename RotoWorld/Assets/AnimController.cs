@@ -89,22 +89,32 @@ public class AnimController : MonoBehaviour
         moveVertical = Input.GetAxis("Vertical");
         moveHorizontal = Input.GetAxis("Horizontal");
         Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
-        if (isGrounded)
-        {
+        //if (isGrounded)
+        //{
             if (moveVertical != 0 || moveHorizontal != 0)
             {
-                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(movement), 0.15F);
+                Vector3 upVector;
+                if(gravityDir == gravityDirection.UP)
+                {
+                    upVector = new Vector3(0, -1, 0);
+                }
+                else//direction is DOWN. need to add all other cases later
+                {
+                    upVector = new Vector3(0, 1, 0);
+                }
+                
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(movement, upVector), 0.15F);
                 anim.Play("run");
             }
             else
             {
                 anim.Play("idle");
             }
-        }
-        else
-        {
-            anim.Play("jump-float");
-        }
+        //}
+        //else
+        //{
+        //    anim.Play("jump-float");
+        //}
         transform.Translate(movement * speed * Time.deltaTime, Space.World);
         if (IsGrounded())
         {
