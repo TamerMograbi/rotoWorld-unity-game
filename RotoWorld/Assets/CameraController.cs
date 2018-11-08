@@ -16,6 +16,7 @@ public class CameraController : MonoBehaviour {
     public bool rotated;
     // Use this for initialization
     void Start () {
+        player = GameObject.Find("Player");
         offset = transform.position - player.transform.position;
         animCtrl = player.GetComponent<AnimController>();
         rotated = false;
