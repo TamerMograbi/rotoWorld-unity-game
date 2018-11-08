@@ -89,32 +89,28 @@ public class AnimController : MonoBehaviour
         moveVertical = Input.GetAxis("Vertical");
         moveHorizontal = Input.GetAxis("Horizontal");
         Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
-        if (moveVertical != 0 || moveHorizontal != 0)
+        if (isGrounded)
         {
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(movement), 0.15F);
-            anim.Play("run");
+            if (moveVertical != 0 || moveHorizontal != 0)
+            {
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(movement), 0.15F);
+                anim.Play("run");
+            }
+            else
+            {
+                anim.Play("idle");
+            }
         }
         else
         {
-            anim.Play("idle");
+            anim.Play("jump-float");
         }
         transform.Translate(movement * speed * Time.deltaTime, Space.World);
         if (IsGrounded())
         {
-            /*verticalVelocity = -gravAccel * Time.deltaTime;
-            if (jumping && canJump)
-            {
-                verticalVelocity = jumpAccel;
-                jumping = false;
-                canJump = false;
-            }*/
             if (jumping && canJump)
                 rb.AddForce(new Vector3(0, 1, 0) * jumpAccel, ForceMode.Impulse);
         }
-        /*else
-            verticalVelocity -= gravAccel * Time.deltaTime;
-
-        rb.AddForce(getDirectionVector() * verticalVelocity);*/
         rb.AddForce(getCurrentGravity());
     }
 
