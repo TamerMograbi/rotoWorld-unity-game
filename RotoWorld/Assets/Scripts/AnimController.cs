@@ -190,4 +190,22 @@ public class AnimController : MonoBehaviour
         return gravityDir;
     }
 
+    public void takeDamage()
+    {
+        System.Random rnd = new System.Random();
+        //add a bit of randomness in which director character is forced
+        int xForceDir = rnd.Next(-1,1);
+        int zForceDir = rnd.Next(-1, 1);
+        Vector3 v = getDirectionVector();
+        v.x = 3 * xForceDir;
+        v.z = 3 * zForceDir;
+        if(v.x == 0 && v.z == 0)
+        {
+            v.x = 3;
+        }
+        v.y *= 3;
+
+        rb.AddForce(v, ForceMode.Impulse);
+    }
+
 }
