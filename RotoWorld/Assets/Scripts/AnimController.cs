@@ -14,6 +14,7 @@ public class AnimController : MonoBehaviour
     gravityDirection gravityDir;
     public float angle;
     bool CtrlPressed;
+    bool AltPressed;
 
     public LayerMask groundLayers;
     public BoxCollider cldr;
@@ -40,6 +41,7 @@ public class AnimController : MonoBehaviour
         gravityDir = gravityDirection.DOWN;
         angle = 0;
         CtrlPressed = false;
+        AltPressed = false;
 
         cldr = GetComponent<BoxCollider>();
         jumpAccel = Physics.gravity.magnitude / 2;
@@ -58,6 +60,18 @@ public class AnimController : MonoBehaviour
         {
             gravityDir = gravityDirection.UP;
             CtrlPressed = true;
+        }
+        if(Input.GetKeyDown(KeyCode.LeftAlt))
+        {
+            if (gravityDir == gravityDirection.RIGHT)//If already on right wall, go to left wall
+            {
+                gravityDir = gravityDirection.LEFT;
+            }
+            else// go to right wall
+            {
+                gravityDir = gravityDirection.RIGHT;
+            }
+            AltPressed = true;
         }
         if (Input.GetKeyDown(KeyCode.Space) && IsGrounded()) {     
             StartCoroutine(JumpTimer());
@@ -82,13 +96,43 @@ public class AnimController : MonoBehaviour
                 CtrlPressed = false;
             }
         }
+        if(AltPressed)
+        {
+            float targetAngle = 90;
+            if(Mathf.Abs(90 - angle) < 0.1)//We are on the right wall
+            {
+                targetAngle = -90;//rotate to left wall angle
+            }
+            angle = Mathf.LerpAngle(angle, targetAngle, 8 * Time.deltaTime);
+
+            if((Mathf.Abs(transform.rotation.eulerAngles.z - targetAngle) > 0.1))
+            {
+                transform.Rotate(new Vector3(0, 0, angle * Mathf.Deg2Rad));
+            }
+            else
+            {
+                AltPressed = false;
+            }
+        }
     }
     private void FixedUpdate()
     {
         isGrounded = IsGrounded();
         moveVertical = Input.GetAxis("Vertical");
         moveHorizontal = Input.GetAxis("Horizontal");
-        Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
+        Vector3 movement;
+        if (gravityDir == gravityDirection.DOWN || gravityDir == gravityDirection.UP)
+        {
+            movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
+        }
+        else if(gravityDir == gravityDirection.RIGHT)
+        {
+            movement = new Vector3(0, moveHorizontal, moveVertical);
+        }
+        else//gravity direction is left
+        {
+            movement = new Vector3(0,-moveHorizontal, moveVertical);
+        }
         //if (isGrounded)
         //{
             if (moveVertical != 0 || moveHorizontal != 0)
@@ -98,9 +142,17 @@ public class AnimController : MonoBehaviour
                 {
                     upVector = new Vector3(0, -1, 0);
                 }
-                else//direction is DOWN. need to add all other cases later
+                else if(gravityDir == gravityDirection.DOWN)
                 {
                     upVector = new Vector3(0, 1, 0);
+                }
+                else if(gravityDir == gravityDirection.RIGHT)
+                {
+                    upVector = new Vector3(-1, 0, 0);
+                }
+                else//LEFT
+                {
+                    upVector = new Vector3(1, 0, 0);
                 }
                 
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(movement, upVector), 0.15F);
