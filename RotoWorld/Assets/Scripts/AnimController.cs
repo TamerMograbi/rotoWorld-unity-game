@@ -201,7 +201,7 @@ public class AnimController : MonoBehaviour
         else if (gravityDir.Equals(gravityDirection.UP)) movement = new Vector3(-moveHorizontal, 0.0f, moveVertical);   // up = reversed left and right
         else if (gravityDir.Equals(gravityDirection.LEFT)) movement = new Vector3(0.0f, -moveHorizontal, moveVertical);
         else movement = new Vector3(0.0f, moveHorizontal, moveVertical);
-        if (moveVertical != 0 || moveHorizontal != 0)
+        //if (moveVertical != 0 || moveHorizontal != 0)
             /*
             if (gravityDir == gravityDirection.DOWN || gravityDir == gravityDirection.UP)
             {
@@ -218,6 +218,7 @@ public class AnimController : MonoBehaviour
             */
             //if (isGrounded)
             //{
+            
             if (moveVertical != 0 || moveHorizontal != 0)
             {
                 Vector3 upVector;
@@ -239,11 +240,13 @@ public class AnimController : MonoBehaviour
                 }
                 
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(movement, upVector), 0.15F);
-                anim.Play("run");
+                //anim.Play("run");
+                anim.SetInteger("state", 1);
             }
             else
             {
-                anim.Play("idle");
+                anim.SetInteger("state", 0);
+                //anim.Play("idle");
             }
         //}
         //else
