@@ -523,7 +523,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d09ba60f07f57548b8aff7b59109454, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 1261722900}
+  player: {fileID: 0}
   gravityDir: 0
   prevGravityDir: 0
   rotated: 0
@@ -1437,6 +1437,10 @@ Prefab:
     - target: {fileID: 4889916270699016, guid: 313ad0ef31f75b84f9f31c0528802fdd, type: 2}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1968476592218994, guid: 313ad0ef31f75b84f9f31c0528802fdd, type: 2}
+      propertyPath: m_TagString
+      value: Player
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 313ad0ef31f75b84f9f31c0528802fdd, type: 2}
