@@ -42,7 +42,7 @@ public class AnimController : MonoBehaviour
         CtrlPressed = false;
 
         cldr = GetComponent<BoxCollider>();
-        jumpAccel = Physics.gravity.magnitude / 2;
+        jumpAccel = Physics.gravity.magnitude / 1.5f;
         gravAccel = Physics.gravity.magnitude;
         
     }
@@ -88,7 +88,13 @@ public class AnimController : MonoBehaviour
         isGrounded = IsGrounded();
         moveVertical = Input.GetAxis("Vertical");
         moveHorizontal = Input.GetAxis("Horizontal");
-        Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
+
+        // Adjust inputs based on which wall you're on
+        Vector3 movement = new Vector3();
+        if (gravityDir.Equals(gravityDirection.DOWN)) movement = new Vector3(moveHorizontal, 0.0f, moveVertical);   // down = normal
+        else if (gravityDir.Equals(gravityDirection.UP)) movement = new Vector3(-moveHorizontal, 0.0f, moveVertical);   // up = reversed left and right
+        else if (gravityDir.Equals(gravityDirection.LEFT)) movement = new Vector3(0.0f, -moveHorizontal, moveVertical);
+        else movement = new Vector3(0.0f, moveHorizontal, moveVertical);
         if (moveVertical != 0 || moveHorizontal != 0)
         {
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(movement), 0.15F);
@@ -109,7 +115,7 @@ public class AnimController : MonoBehaviour
                 canJump = false;
             }*/
             if (jumping && canJump)
-                rb.AddForce(new Vector3(0, 1, 0) * jumpAccel, ForceMode.Impulse);
+                rb.AddForce(getJumpDirectionVector() * jumpAccel, ForceMode.Impulse);
         }
         /*else
             verticalVelocity -= gravAccel * Time.deltaTime;
@@ -143,7 +149,7 @@ public class AnimController : MonoBehaviour
         }
     }
 
-    private Vector3 getDirectionVector()
+    private Vector3 getJumpDirectionVector()
     {
         switch (gravityDir)
         {
@@ -176,7 +182,20 @@ public class AnimController : MonoBehaviour
     // https://www.youtube.com/watch?v=vdOFUFMiPDU - video I used as a jumping tutorial
     private bool IsGrounded()
     {
-        return Physics.CheckCapsule(cldr.bounds.center, new Vector3(cldr.bounds.center.x, cldr.bounds.min.y, cldr.bounds.center.z), Mathf.Min(cldr.size.x, cldr.size.z)/2 * .25f, groundLayers);
+        switch (gravityDir)
+        {
+            case gravityDirection.DOWN:
+                return Physics.CheckCapsule(cldr.bounds.center, new Vector3(cldr.bounds.center.x, cldr.bounds.min.y, cldr.bounds.center.z), Mathf.Min(cldr.size.x, cldr.size.z) / 2 * .25f, groundLayers);
+            case gravityDirection.UP:
+                return Physics.CheckCapsule(cldr.bounds.center, new Vector3(cldr.bounds.center.x, cldr.bounds.max.y, cldr.bounds.center.z), Mathf.Min(cldr.size.x, cldr.size.z) / 2 * .25f, groundLayers);
+            case gravityDirection.LEFT:
+                return Physics.CheckCapsule(cldr.bounds.center, new Vector3(cldr.bounds.min.x, cldr.bounds.center.y, cldr.bounds.center.z), Mathf.Min(cldr.size.x, cldr.size.z) / 2 * .25f, groundLayers);
+            default://RIGHT
+                return Physics.CheckCapsule(cldr.bounds.center, new Vector3(cldr.bounds.max.x, cldr.bounds.center.y, cldr.bounds.center.z), Mathf.Min(cldr.size.x, cldr.size.z) / 2 * .25f, groundLayers);
+
+                //still need cases for front and back
+        }
+        
     }
 
 }
