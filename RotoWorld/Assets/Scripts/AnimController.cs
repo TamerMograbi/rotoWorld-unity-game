@@ -17,7 +17,7 @@ public class AnimController : MonoBehaviour
     bool JPressed;
     bool KPressed;
     bool LPressed;
-
+    private bool sprinting;
 
     public LayerMask groundLayers;
     public BoxCollider cldr;
@@ -29,6 +29,7 @@ public class AnimController : MonoBehaviour
     public bool isGrounded = false;
     private bool canJump = true;
     private float finishedTime = .3f;
+    private Camera cam;
 
     // Use this for initialization
     void Start()
@@ -36,6 +37,7 @@ public class AnimController : MonoBehaviour
         //Time.timeScale = .25f;
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
+        cam = Camera.main;
         speed = 2;
         moveVertical = 0;
         moveHorizontal = 0;
@@ -47,9 +49,10 @@ public class AnimController : MonoBehaviour
         JPressed = false;
         KPressed = false;
         LPressed = false;
+        sprinting = false;
 
         cldr = GetComponent<BoxCollider>();
-        jumpAccel = Physics.gravity.magnitude / 1.5f;
+        jumpAccel = Physics.gravity.magnitude / 2f;
         gravAccel = Physics.gravity.magnitude;
         
     }
@@ -86,6 +89,11 @@ public class AnimController : MonoBehaviour
             if (!gravityDir.Equals(gravityDirection.RIGHT))
                 LPressed = true;
         }
+
+        if (Input.GetKey(KeyCode.LeftShift))
+            sprinting = true;
+        else
+            sprinting = false;
         /*if (Input.GetKeyDown(KeyCode.LeftControl))
         {
             gravityDir = gravityDirection.UP;
@@ -197,10 +205,17 @@ public class AnimController : MonoBehaviour
         moveVertical = Input.GetAxis("Vertical");
         moveHorizontal = Input.GetAxis("Horizontal");
         Vector3 movement;
-        if (gravityDir.Equals(gravityDirection.DOWN)) movement = new Vector3(moveHorizontal, 0.0f, moveVertical);   // down = normal
+        float camAngle = cam.transform.eulerAngles.y * Mathf.Deg2Rad;
+        if (gravityDir.Equals(gravityDirection.DOWN)) movement = new Vector3(moveHorizontal * Mathf.Cos(camAngle) + moveVertical * Mathf.Sin(camAngle), 0.0f, moveVertical * Mathf.Cos(camAngle) - moveHorizontal * Mathf.Sin(camAngle));   // down = normal
         else if (gravityDir.Equals(gravityDirection.UP)) movement = new Vector3(-moveHorizontal, 0.0f, moveVertical);   // up = reversed left and right
         else if (gravityDir.Equals(gravityDirection.LEFT)) movement = new Vector3(0.0f, -moveHorizontal, moveVertical);
         else movement = new Vector3(0.0f, moveHorizontal, moveVertical);
+        /*if (gravityDir.Equals(gravityDirection.DOWN)) movement = new Vector3(moveHorizontal, 0.0f, moveVertical);   // down = normal
+        else if (gravityDir.Equals(gravityDirection.UP)) movement = new Vector3(-moveHorizontal, 0.0f, moveVertical);   // up = reversed left and right
+        else if (gravityDir.Equals(gravityDirection.LEFT)) movement = new Vector3(0.0f, -moveHorizontal, moveVertical);
+        else movement = new Vector3(0.0f, moveHorizontal, moveVertical);*/
+        if (sprinting)
+            movement = movement * 2;
         //if (moveVertical != 0 || moveHorizontal != 0)
             /*
             if (gravityDir == gravityDirection.DOWN || gravityDir == gravityDirection.UP)
@@ -241,7 +256,10 @@ public class AnimController : MonoBehaviour
                 
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(movement, upVector), 0.15F);
                 //anim.Play("run");
-                anim.SetInteger("state", 1);
+                if (!sprinting)
+                    anim.SetInteger("state", 1);
+                else
+                    anim.SetInteger("state", 2);
             }
             else
             {
@@ -257,7 +275,7 @@ public class AnimController : MonoBehaviour
         if (IsGrounded())
         {
             if (jumping && canJump)
-                rb.AddForce(getJumpDirectionVector() * jumpAccel, ForceMode.Impulse);
+                rb.AddForce(getJumpDirectionVector() * (sprinting ? jumpAccel * 1.5f : jumpAccel), ForceMode.Impulse);
         }
         rb.AddForce(getCurrentGravity());
     }
