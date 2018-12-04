@@ -30,6 +30,11 @@ public class AnimController : MonoBehaviour
     private bool canJump = true;
     private float finishedTime = .3f;
     private Camera cam;
+    GameObject rock;
+
+    //-------------- Throwing -------------
+    private bool throwing = false;
+    private float throwTime = 1.0f;
 
     // Use this for initialization
     void Start()
@@ -54,7 +59,8 @@ public class AnimController : MonoBehaviour
         cldr = GetComponent<BoxCollider>();
         jumpAccel = Physics.gravity.magnitude / 2f;
         gravAccel = Physics.gravity.magnitude;
-        
+        rock = Resources.Load<GameObject>("Rock");
+
     }
 
     // Update is called once per frame
@@ -89,28 +95,15 @@ public class AnimController : MonoBehaviour
             if (!gravityDir.Equals(gravityDirection.RIGHT))
                 LPressed = true;
         }
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
 
         if (Input.GetKey(KeyCode.LeftShift))
             sprinting = true;
         else
             sprinting = false;
-        /*if (Input.GetKeyDown(KeyCode.LeftControl))
-        {
-            gravityDir = gravityDirection.UP;
-            CtrlPressed = true;
-        }
-        if(Input.GetKeyDown(KeyCode.LeftAlt))
-        {
-            if (gravityDir == gravityDirection.RIGHT)//If already on right wall, go to left wall
-            {
-                gravityDir = gravityDirection.LEFT;
-            }
-            else// go to right wall
-            {
-                gravityDir = gravityDirection.RIGHT;
-            }
-            AltPressed = true;
-        }*/
         if (Input.GetKeyDown(KeyCode.Space) && IsGrounded()) {     
             StartCoroutine(JumpTimer());
             jumping = true;
@@ -118,8 +111,6 @@ public class AnimController : MonoBehaviour
         else
             jumping = false;
 
-        //We can't have this code in the above if as lerp needs to keep working also after the key space gets pressed and only stop
-        //when a 180 degrees rotation has been reached.
         if(IPressed)
         {
             angle = Mathf.LerpAngle(angle, 180, 8 * Time.deltaTime);
@@ -180,24 +171,6 @@ public class AnimController : MonoBehaviour
                 transform.Rotate(new Vector3(90 * Mathf.Deg2Rad, 0, 0));
             }
         }
-        /*if (AltPressed)
-        {
-            float targetAngle = 90;
-            if(Mathf.Abs(90 - angle) < 0.1)//We are on the right wall
-            {
-                targetAngle = -90;//rotate to left wall angle
-            }
-            angle = Mathf.LerpAngle(angle, targetAngle, 8 * Time.deltaTime);
-
-            if((Mathf.Abs(transform.rotation.eulerAngles.z - targetAngle) > 0.1))
-            {
-                transform.Rotate(new Vector3(0, 0, angle * Mathf.Deg2Rad));
-            }
-            else
-            {
-                AltPressed = false;
-            }
-        }*/
     }
     private void FixedUpdate()
     {
@@ -219,36 +192,21 @@ public class AnimController : MonoBehaviour
         else movement = new Vector3(0.0f, moveHorizontal, moveVertical);*/
         if (sprinting)
             movement = movement * 2;
-        //if (moveVertical != 0 || moveHorizontal != 0)
-            /*
-            if (gravityDir == gravityDirection.DOWN || gravityDir == gravityDirection.UP)
-            {
-                movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
-            }
-            else if(gravityDir == gravityDirection.RIGHT)
-            {
-                movement = new Vector3(0, moveHorizontal, moveVertical);
-            }
-            else//gravity direction is left
-            {
-                movement = new Vector3(0,-moveHorizontal, moveVertical);
-            }
-            */
-            //if (isGrounded)
-            //{
-            
+
+        if (!throwing)
+        {
             if (moveVertical != 0 || moveHorizontal != 0)
             {
                 Vector3 upVector;
-                if(gravityDir == gravityDirection.UP)
+                if (gravityDir == gravityDirection.UP)
                 {
                     upVector = new Vector3(0, -1, 0);
                 }
-                else if(gravityDir == gravityDirection.DOWN)
+                else if (gravityDir == gravityDirection.DOWN)
                 {
                     upVector = new Vector3(0, 1, 0);
                 }
-                else if(gravityDir == gravityDirection.RIGHT)
+                else if (gravityDir == gravityDirection.RIGHT)
                 {
                     upVector = new Vector3(-1, 0, 0);
                 }
@@ -256,7 +214,7 @@ public class AnimController : MonoBehaviour
                 {
                     upVector = new Vector3(1, 0, 0);
                 }
-                
+
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(movement, upVector), 0.15F);
                 //anim.Play("run");
                 if (!sprinting)
@@ -269,18 +227,30 @@ public class AnimController : MonoBehaviour
                 anim.SetInteger("state", 0);
                 //anim.Play("idle");
             }
-        //}
-        //else
-        //{
-        //    anim.Play("jump-float");
-        //}
-        transform.Translate(movement * speed * Time.deltaTime, Space.World);
-        if (IsGrounded())
-        {
-            if (jumping && canJump)
-                rb.AddForce(getJumpDirectionVector() * (sprinting ? jumpAccel * 1.5f : jumpAccel), ForceMode.Impulse);
+            //}
+            //else
+            //{
+            //    anim.Play("jump-float");
+            //}
+            transform.Translate(movement * speed * Time.deltaTime, Space.World);
+            if (IsGrounded())
+            {
+                if (jumping && canJump)
+                    rb.AddForce(getJumpDirectionVector() * (sprinting ? jumpAccel * 1.5f : jumpAccel), ForceMode.Impulse);
+            }
+            rb.AddForce(getCurrentGravity());
         }
-        rb.AddForce(getCurrentGravity());
+        else
+        {
+            anim.SetInteger("state", 3);
+        }
+
+        // -------- Throw Rock -----------
+        if (Input.GetKeyDown(KeyCode.LeftControl) && anim.GetInteger("state") == 0 && IsGrounded())
+        {
+            throwing = true;
+            StartCoroutine(ThrowCountdown());
+        }
     }
 
     private Vector3 getCurrentGravity() // Currently Not In Use
@@ -376,6 +346,23 @@ public class AnimController : MonoBehaviour
         v.y *= 3;
 
         rb.AddForce(v, ForceMode.Impulse);
+    }
+
+    public IEnumerator ThrowCountdown()
+    {
+        bool thrown = false;
+        while (throwTime > 0)
+        {
+            yield return new WaitForSeconds(0.1f);
+            throwTime -= 0.1f;
+            if ((throwTime - .2f) < .01f && !thrown)
+            {
+                GameObject.Instantiate(rock, new Vector3(transform.position.x, transform.position.y + 1, transform.position.x), new Quaternion());
+                thrown = true;
+            }
+        }
+        throwing = false;
+        throwTime = 1.0f;
     }
 
 }

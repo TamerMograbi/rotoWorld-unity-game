@@ -94,20 +94,19 @@ public class CameraControllerMouse : MonoBehaviour {
 
     // Update is called once per frame
     void LateUpdate () {
-        if(animCtrl.getGravityDir() != gravityDir)
+        if (animCtrl.getGravityDir() != gravityDir)
         {
             prevGravityDir = gravityDir;
             gravityDir = animCtrl.getGravityDir();
             rotated = false;
         }
-        //else if (!rotating)
-        //{
         Vector3 dir = new Vector3(0, 0, -distance);
         Quaternion rotation = new Quaternion();
         if (gravityDir == AnimController.gravityDirection.DOWN)
         {
             rotation = Quaternion.Euler(currY, currX, 0);
-            change2 = new Vector3(currY, currX, 0);
+            //change2 = new Vector3(currY, currX, 0);
+            change2 = rotation * dir;
             //dir = new Vector3(0, 0, -distance);
         }
         else if (gravityDir == AnimController.gravityDirection.UP)
@@ -119,7 +118,8 @@ public class CameraControllerMouse : MonoBehaviour {
         {
             //rotation = Quaternion.Euler(currY, currX, 0);
             rotation = Quaternion.Euler(currX, -currY, 0);
-            change2 = new Vector3(currX, -currY, 0);
+            //change2 = new Vector3(currX, -currY, 0);
+            change2 = rotation * dir;
         }
         else
         {
@@ -127,8 +127,10 @@ public class CameraControllerMouse : MonoBehaviour {
             //dir = new Vector3(0, -distance, 0);
         }
         change = rotation.eulerAngles;
+
+
         camTransform.position = lookAt.position + rotation * dir;
-        //}
+
         if (gravityDir == AnimController.gravityDirection.UP)
         {
             if (!rotated)

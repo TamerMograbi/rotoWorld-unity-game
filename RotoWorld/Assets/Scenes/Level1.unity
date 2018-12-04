@@ -545,8 +545,13 @@ MonoBehaviour:
   prevGravityDir: 0
   rotated: 0
   rotating: 0
+  zangle: 0
   lookAt: {fileID: 1261722903}
   camTransform: {fileID: 0}
+  currX: 0
+  currY: 0
+  change: {x: 0, y: 0, z: 0}
+  change2: {x: 0, y: 0, z: 0}
 --- !u!1 &689450791
 GameObject:
   m_ObjectHideFlags: 0
