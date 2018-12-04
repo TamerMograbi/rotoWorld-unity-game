@@ -18,7 +18,7 @@ public class CameraControllerMouse : MonoBehaviour {
 
     private float xangle = 0.0f;    // (-30, 30) if gravity is on top or bottom, 0 if it is on sides
     private float yangle = 0.0f;    // (-30, 30) if gravity is on top or bottom, 0 if it is on sides
-    private float zangle = 0.0f;    // same angle as player rotation (0, 90, 180, -90)
+    public float zangle = 0.0f;    // same angle as player rotation (0, 90, 180, -90)
     //private float ztarget = 0.0f;
     // Use this for initialization
 
@@ -27,14 +27,17 @@ public class CameraControllerMouse : MonoBehaviour {
     public Transform camTransform;
     private Camera cam;
     private float distance = 10;
-    private float currX = 0.0f;
-    private float currY = 0.0f;
+    public float currX = 0.0f;
+    public float currY = 0.0f;
     private float sensitivityX = 4.0f;
     private float sensitivityY = 1.0f;
-    private const float Y_ANGLE_MIN = 0.0f;
+    private const float Y_ANGLE_MIN = 10.0f;
     private const float Y_ANGLE_MAX = 60.0f;
     private const float MIN_DISTANCE = 3.0f;
     private const float MAX_DISTANCE = 6.0f;
+
+    public Vector3 change;
+    public Vector3 change2;
 
     void Start () {
         player = GameObject.Find("Player");
@@ -55,7 +58,7 @@ public class CameraControllerMouse : MonoBehaviour {
     {
         if (!rotating)
         {
-            if (gravityDir == AnimController.gravityDirection.DOWN)
+            /*if (gravityDir == AnimController.gravityDirection.DOWN)
             {
                 currX += Input.GetAxis("Mouse X") * sensitivityX;
                 currY += Input.GetAxis("Mouse Y") * sensitivityY;
@@ -65,20 +68,23 @@ public class CameraControllerMouse : MonoBehaviour {
             {
                 currX -= Input.GetAxis("Mouse X") * sensitivityX;
                 currY -= Input.GetAxis("Mouse Y") * sensitivityY;
-                currY = Mathf.Clamp(currY, Y_ANGLE_MIN, -Y_ANGLE_MAX);
+                currY = Mathf.Clamp(currY, -Y_ANGLE_MAX, -Y_ANGLE_MIN);
             }
             else if (gravityDir == AnimController.gravityDirection.LEFT)
+            {
+                currY += Input.GetAxis("Mouse X") * sensitivityX;
+                currX -= Input.GetAxis("Mouse Y") * sensitivityY;
+                currX = Mathf.Clamp(currX, -Y_ANGLE_MAX, -Y_ANGLE_MIN);
+            }
+            else if (gravityDir == AnimController.gravityDirection.RIGHT)
             {
                 currY -= Input.GetAxis("Mouse X") * sensitivityX;
                 currX += Input.GetAxis("Mouse Y") * sensitivityY;
                 currX = Mathf.Clamp(currX, Y_ANGLE_MIN, Y_ANGLE_MAX);
-            }
-            else if (gravityDir == AnimController.gravityDirection.RIGHT)
-            {
-                currY += Input.GetAxis("Mouse X") * sensitivityX;
-                currX -= Input.GetAxis("Mouse Y") * sensitivityY;
-                currX = Mathf.Clamp(currY, Y_ANGLE_MIN, -Y_ANGLE_MAX);
-            }
+            }*/
+            currX += Input.GetAxis("Mouse X") * sensitivityX;
+            currY += Input.GetAxis("Mouse Y") * sensitivityY;
+            currY = Mathf.Clamp(currY, Y_ANGLE_MIN, Y_ANGLE_MAX);
 
             distance -= Input.GetAxis("Mouse ScrollWheel");
 
@@ -94,13 +100,36 @@ public class CameraControllerMouse : MonoBehaviour {
             gravityDir = animCtrl.getGravityDir();
             rotated = false;
         }
-        else if (!rotating)
+        //else if (!rotating)
+        //{
+        Vector3 dir = new Vector3(0, 0, -distance);
+        Quaternion rotation = new Quaternion();
+        if (gravityDir == AnimController.gravityDirection.DOWN)
         {
-            Vector3 dir = new Vector3(0, 0, -distance);
-            Quaternion rotation = Quaternion.Euler(currY, currX, zangle);
-            camTransform.position = lookAt.position + rotation * dir;
+            rotation = Quaternion.Euler(currY, currX, 0);
+            change2 = new Vector3(currY, currX, 0);
+            //dir = new Vector3(0, 0, -distance);
         }
-        /*if (gravityDir == AnimController.gravityDirection.UP)
+        else if (gravityDir == AnimController.gravityDirection.UP)
+        {
+            rotation = Quaternion.Euler(-currY, -currX, 0);
+            //dir = new Vector3(0, 0, -distance);
+        }
+        else if (gravityDir == AnimController.gravityDirection.LEFT)
+        {
+            //rotation = Quaternion.Euler(currY, currX, 0);
+            rotation = Quaternion.Euler(currX, -currY, 0);
+            change2 = new Vector3(currX, -currY, 0);
+        }
+        else
+        {
+            rotation = Quaternion.Euler(-currX, currY, 0);
+            //dir = new Vector3(0, -distance, 0);
+        }
+        change = rotation.eulerAngles;
+        camTransform.position = lookAt.position + rotation * dir;
+        //}
+        if (gravityDir == AnimController.gravityDirection.UP)
         {
             if (!rotated)
             {
@@ -112,13 +141,14 @@ public class CameraControllerMouse : MonoBehaviour {
                 //stop rotation when the character is upside down
                 if (Mathf.Abs(-30 - xangle) < .1f && Mathf.Abs(0 - yangle) < .1f && Mathf.Abs(zangle - 180) < .1f)
                 {
-                    camTransform.eulerAngles = new Vector3(-30, 0, 180);
+                    //camTransform.eulerAngles = new Vector3(-30, 0, 180);
+                    zangle = 180;
                     rotated = true;
                     rotating = false;
                 }
                 else
                 {
-                    camTransform.eulerAngles = new Vector3(xangle, yangle, zangle);
+                    //camTransform.eulerAngles = new Vector3(xangle, yangle, zangle);
                 }
             }
 
@@ -128,20 +158,16 @@ public class CameraControllerMouse : MonoBehaviour {
             if (!rotated)
             {
                 rotating = true;
-                xangle = Mathf.LerpAngle(xangle, 0, Time.deltaTime);
-                yangle = Mathf.LerpAngle(yangle, -30, Time.deltaTime);
-                zangle = Mathf.LerpAngle(zangle, -90, Time.deltaTime);
+                xangle = Mathf.LerpAngle(xangle, 0, 3 * Time.deltaTime);
+                yangle = Mathf.LerpAngle(yangle, -30, 3 * Time.deltaTime);
+                zangle = Mathf.LerpAngle(zangle, -90, 3 * Time.deltaTime);
 
                 //stop rotation when the character is upside down
-                if (Mathf.Abs(0 - transform.rotation.eulerAngles.x) < .1f && Mathf.Abs(-30 - transform.rotation.eulerAngles.y) < .1f && Mathf.Abs(transform.rotation.eulerAngles.z - -90) < .1f)
+                if (Mathf.Abs(0 - xangle) < .1f && Mathf.Abs(-30 - yangle) < .1f && (Mathf.Abs(zangle - -90) < .1f) || Mathf.Abs(zangle - 270) < .1f)
                 {
-                    transform.eulerAngles = new Vector3(0, -30, -90);
+                    zangle = -90;
                     rotated = true;
                     rotating = false;
-                }
-                else
-                {
-                    transform.eulerAngles = new Vector3(xangle, yangle, zangle);
                 }
             }
 
@@ -151,20 +177,16 @@ public class CameraControllerMouse : MonoBehaviour {
             if (!rotated)
             {
                 rotating = true;
-                xangle = Mathf.LerpAngle(xangle, 30, Time.deltaTime);
-                yangle = Mathf.LerpAngle(yangle, 0, Time.deltaTime);
-                zangle = Mathf.LerpAngle(zangle, 0, Time.deltaTime);
+                xangle = Mathf.LerpAngle(xangle, 30, 3 * Time.deltaTime);
+                yangle = Mathf.LerpAngle(yangle, 0, 3 * Time.deltaTime);
+                zangle = Mathf.LerpAngle(zangle, 0, 3 * Time.deltaTime);
 
                 //stop rotation when the character is upside down
-                if (Mathf.Abs(30 - transform.rotation.eulerAngles.x) < .1f && Mathf.Abs(0 - transform.rotation.eulerAngles.y) < .1f && Mathf.Abs(transform.rotation.eulerAngles.z - 0) < .1f)
+                if (Mathf.Abs(30 - xangle) < .1f && Mathf.Abs(0 - yangle) < .1f && (Mathf.Abs(zangle - 0) < .1f) || (Mathf.Abs(zangle - 360) < .1f))
                 {
-                    transform.eulerAngles = new Vector3(30, 0, 0);
+                    zangle = 0;
                     rotated = true;
                     rotating = false;
-                }
-                else
-                {
-                    transform.eulerAngles = new Vector3(xangle, yangle, zangle);
                 }
             }
         }
@@ -173,26 +195,23 @@ public class CameraControllerMouse : MonoBehaviour {
             if (!rotated)
             {
                 rotating = true;
-                xangle = Mathf.LerpAngle(xangle, 0, Time.deltaTime);
-                yangle = Mathf.LerpAngle(yangle, 30, Time.deltaTime);
-                zangle = Mathf.LerpAngle(zangle, 90, 2 * Time.deltaTime);
+                xangle = Mathf.LerpAngle(xangle, 0, 3 * Time.deltaTime);
+                yangle = Mathf.LerpAngle(yangle, 30, 3 * Time.deltaTime);
+                zangle = Mathf.LerpAngle(zangle, 90, 3 * Time.deltaTime);
 
                 //stop rotation when the character is upside down
-                if (Mathf.Abs(0 - transform.rotation.eulerAngles.x) < .1f && Mathf.Abs(30 - transform.rotation.eulerAngles.y) < .1f && Mathf.Abs(transform.rotation.eulerAngles.z - 90) < .1f)
+                if (Mathf.Abs(0 - xangle) < .1f && Mathf.Abs(30 - yangle) < .1f && Mathf.Abs(zangle - 90) < .1f)
                 {
-                    transform.eulerAngles = new Vector3(0, 30, 90);
+                    zangle = 90;
                     rotated = true;
                     rotating = false;
                 }
-                else
-                {
-                    transform.eulerAngles = new Vector3(xangle, yangle, zangle);
-                }
             }
 
-        }*/
+        }
 
-        camTransform.LookAt(lookAt.position);
+        camTransform.LookAt(lookAt.position, new Vector3(-Mathf.Sin(zangle * Mathf.Deg2Rad), Mathf.Cos(zangle * Mathf.Deg2Rad), 0));
+        //camTransform.LookAt(lookAt.position, new Vector3(1, 0, 0));
         //transform.position = player.transform.position + offset + yOffset;
         //Vector3 targetPos = player.transform.position + offset + yOffset;
         //transform.position = Vector3.Lerp(transform.position, targetPos, 4 * Time.deltaTime);
