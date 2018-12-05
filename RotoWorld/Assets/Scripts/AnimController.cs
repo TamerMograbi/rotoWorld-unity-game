@@ -5,6 +5,7 @@ using UnityEngine;
 public class AnimController : MonoBehaviour
 {
     public enum gravityDirection { DOWN, LEFT, RIGHT, UP };
+    public enum animState { IDLE = 0,RUN,SPRINT,THROW,JUMP}
     public Animator anim;
     private Rigidbody rb;
     float speed;
@@ -235,14 +236,29 @@ public class AnimController : MonoBehaviour
                 }
 
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(movement, upVector), 0.15F);
-                if (!sprinting)
-                    anim.SetInteger("state", 1);
-                else
-                    anim.SetInteger("state", 2);
+                if (isGrounded)
+                {
+                    if (!sprinting)
+                        anim.SetInteger("state", (int)animState.RUN);
+                    else
+                        anim.SetInteger("state", (int)animState.SPRINT);
+                }
+                else//mid-air
+                {
+                    anim.SetInteger("state", (int)animState.JUMP);
+                }
             }
             else
             {
-                anim.SetInteger("state", 0);
+                if (isGrounded)
+                {
+                    anim.SetInteger("state", (int)animState.IDLE);
+                }
+                else//mid-air
+                {
+                    anim.SetInteger("state", (int)animState.JUMP);
+                }
+                    
             }
             transform.Translate(movement * speed * Time.deltaTime, Space.World);
             if (IsGrounded())
@@ -254,7 +270,7 @@ public class AnimController : MonoBehaviour
         }
         else
         {
-            anim.SetInteger("state", 3);
+            anim.SetInteger("state", (int)animState.THROW);
         }
 
         // -------- Throw Rock -----------
