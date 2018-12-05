@@ -13,10 +13,10 @@ public class AnimController : MonoBehaviour
     float maxJump;
     gravityDirection gravityDir;
     public float angle;
-    bool IPressed;
-    bool JPressed;
-    bool KPressed;
-    bool LPressed;
+    public bool IPressed;
+    public bool JPressed;
+    public bool KPressed;
+    public bool LPressed;
     private bool sprinting;
 
     public LayerMask groundLayers;
@@ -31,6 +31,7 @@ public class AnimController : MonoBehaviour
     private float finishedTime = .3f;
     private Camera cam;
     GameObject rock;
+    float gravityRotSpeed;
 
     //-------------- Throwing -------------
     private bool throwing = false;
@@ -55,6 +56,7 @@ public class AnimController : MonoBehaviour
         KPressed = false;
         LPressed = false;
         sprinting = false;
+        gravityRotSpeed = 0.05f;
 
         cldr = GetComponent<BoxCollider>();
         jumpAccel = Physics.gravity.magnitude / 2f;
@@ -63,6 +65,35 @@ public class AnimController : MonoBehaviour
 
     }
 
+    bool isInInvertedRotation()
+    {
+        Vector3 rotV = transform.rotation.eulerAngles;
+        if (((Mathf.Abs(rotV.x - -180) < 2f) || (Mathf.Abs(rotV.x - 180) < 2f))  && Mathf.Abs(rotV.z - 0) < 2f)
+        {
+            return true;
+        }
+        if(Mathf.Abs(rotV.x - 0) < 2f && Mathf.Abs(rotV.z - 180) < 2f)
+        {
+            return true;
+        }
+        return false;
+    }
+    bool isNormalRotation()
+    {
+        Vector3 rotV = transform.rotation.eulerAngles;
+        return Mathf.Abs(rotV.x - 0) < 2f && Mathf.Abs(rotV.z - 0) < 2f;
+    }
+    bool isLeftRotation()
+    {
+        Vector3 rotV = transform.rotation.eulerAngles;
+        Debug.Log("y = " + rotV.y + " z = " + rotV.z);
+        return Mathf.Abs(rotV.y - 0) < 2f && ((Mathf.Abs(rotV.z - -90) < 2f ) || (Mathf.Abs(rotV.z - 270) < 2f)) ;
+    }
+    bool isRightRotation()
+    {
+        Vector3 rotV = transform.rotation.eulerAngles;
+        return Mathf.Abs(rotV.y - 0) < 2f && Mathf.Abs(rotV.z - 90) < 2f;
+    }
     // Update is called once per frame
     void Update()
     {
@@ -73,27 +104,39 @@ public class AnimController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.I) && !JPressed && !KPressed && !LPressed)
         {
-            gravityDir = gravityDirection.UP;
+
             if (!gravityDir.Equals(gravityDirection.UP))
+            {
                 IPressed = true;
+            }
+            gravityDir = gravityDirection.UP;
         }
         if (Input.GetKeyDown(KeyCode.J) && !IPressed && !KPressed && !LPressed)
         {
-            gravityDir = gravityDirection.LEFT;
+
             if (!gravityDir.Equals(gravityDirection.LEFT))
+            {
                 JPressed = true;
+            }
+            gravityDir = gravityDirection.LEFT;
         }
         if (Input.GetKeyDown(KeyCode.K) && !JPressed && !IPressed && !LPressed)
         {
-            gravityDir = gravityDirection.DOWN;
+
             if (!gravityDir.Equals(gravityDirection.DOWN))
+            {
                 KPressed = true;
+            }
+            gravityDir = gravityDirection.DOWN;
         }
         if (Input.GetKeyDown(KeyCode.L) && !JPressed && !KPressed && !IPressed)
         {
-            gravityDir = gravityDirection.RIGHT;
+
             if (!gravityDir.Equals(gravityDirection.RIGHT))
+            {
                 LPressed = true;
+            }
+            gravityDir = gravityDirection.RIGHT;
         }
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -113,63 +156,44 @@ public class AnimController : MonoBehaviour
 
         if(IPressed)
         {
-            angle = Mathf.LerpAngle(angle, 180, 8 * Time.deltaTime);
-            
-            //stop rotation when the character is upside down
-            if (Mathf.Abs(transform.rotation.eulerAngles.x - 180) > .1f)
-            {
-                transform.Rotate(new Vector3(angle * Mathf.Deg2Rad, 0, 0));
-            }
-            else
+            Vector3 movement = new Vector3(-1, 0, 1);
+            Vector3 upVector = new Vector3(0, -1, 0);
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(movement, upVector), gravityRotSpeed);
+            if(isInInvertedRotation())
             {
                 IPressed = false;
-                transform.Rotate(new Vector3(180 * Mathf.Deg2Rad, 0, 0));
             }
         }
         if (JPressed)
         {
-            angle = Mathf.LerpAngle(angle, -90, 8 * Time.deltaTime);
-
-            //stop rotation when the character is upside down
-            if (Mathf.Abs(transform.rotation.eulerAngles.x - -90) > .1f)
-            {
-                transform.Rotate(new Vector3(angle * Mathf.Deg2Rad, 0, 0));
-            }
-            else
+            Vector3 movement = new Vector3(0, -1, 1);
+            Vector3 upVector = new Vector3(1, 0, 0);
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(movement, upVector), gravityRotSpeed);
+            if(isLeftRotation())
             {
                 JPressed = false;
-                transform.Rotate(new Vector3(-90 * Mathf.Deg2Rad, 0, 0));
             }
         }
         if (KPressed)
         {
-            angle = Mathf.LerpAngle(angle, 0, 8 * Time.deltaTime);
-
-            //stop rotation when the character is upside down
-            if (Mathf.Abs(transform.rotation.eulerAngles.x - 0) > .1f)
-            {
-                transform.Rotate(new Vector3(angle * Mathf.Deg2Rad, 0, 0));
-            }
-            else
+            Vector3 movement = new Vector3(1, 0, 1);
+            Vector3 upVector = new Vector3(0, 1, 0);
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(movement, upVector), gravityRotSpeed);
+            if (isNormalRotation())
             {
                 KPressed = false;
-                transform.Rotate(new Vector3(0 * Mathf.Deg2Rad, 0, 0));
             }
         }
         if (LPressed)
         {
-            angle = Mathf.LerpAngle(angle, 90, 8 * Time.deltaTime);
-
-            //stop rotation when the character is upside down
-            if (Mathf.Abs(transform.rotation.eulerAngles.x - 90) > .1f)
-            {
-                transform.Rotate(new Vector3(angle * Mathf.Deg2Rad, 0, 0));
-            }
-            else
+            Vector3 movement = new Vector3(0, 1, 1);
+            Vector3 upVector = new Vector3(-1, 0, 0);
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(movement, upVector), gravityRotSpeed);
+            if(isRightRotation())
             {
                 LPressed = false;
-                transform.Rotate(new Vector3(90 * Mathf.Deg2Rad, 0, 0));
             }
+            
         }
     }
     private void FixedUpdate()
@@ -186,11 +210,6 @@ public class AnimController : MonoBehaviour
         else if (gravityDir.Equals(gravityDirection.UP)) movement = new Vector3(-moveHorizontal * Mathf.Cos(camAngleY) + moveVertical * Mathf.Sin(camAngleY), 0.0f, moveVertical * Mathf.Cos(camAngleY) + moveHorizontal * Mathf.Sin(camAngleY));   // up = reversed left and right
         else if (gravityDir.Equals(gravityDirection.LEFT)) movement = new Vector3(0.0f, -moveHorizontal * Mathf.Cos(camAngleX) - moveVertical * Mathf.Sin(camAngleX), moveVertical * Mathf.Cos(camAngleX) + moveHorizontal * Mathf.Sin(camAngleX));
         else movement = new Vector3(0.0f, moveHorizontal * Mathf.Cos(camAngleX) - moveVertical * Mathf.Sin(camAngleX), moveVertical * Mathf.Cos(camAngleX) - moveHorizontal * Mathf.Sin(camAngleX));
-        /*if (gravityDir.Equals(gravityDirection.DOWN)) movement = new Vector3(moveHorizontal, 0.0f, moveVertical);   // down = normal
-        else if (gravityDir.Equals(gravityDirection.UP)) movement = new Vector3(-moveHorizontal, 0.0f, moveVertical);   // up = reversed left and right
-        else if (gravityDir.Equals(gravityDirection.LEFT)) movement = new Vector3(0.0f, -moveHorizontal, moveVertical);
-        else movement = new Vector3(0.0f, moveHorizontal, moveVertical);*/
-        if (sprinting)
             movement = movement * 2;
 
         if (!throwing)
@@ -216,7 +235,6 @@ public class AnimController : MonoBehaviour
                 }
 
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(movement, upVector), 0.15F);
-                //anim.Play("run");
                 if (!sprinting)
                     anim.SetInteger("state", 1);
                 else
@@ -225,13 +243,7 @@ public class AnimController : MonoBehaviour
             else
             {
                 anim.SetInteger("state", 0);
-                //anim.Play("idle");
             }
-            //}
-            //else
-            //{
-            //    anim.Play("jump-float");
-            //}
             transform.Translate(movement * speed * Time.deltaTime, Space.World);
             if (IsGrounded())
             {
