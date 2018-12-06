@@ -102,6 +102,7 @@ public class CameraControllerMouse : MonoBehaviour {
         }
         Vector3 dir = new Vector3(0, 0, -distance);
         Quaternion rotation = new Quaternion();
+        Quaternion rotation2 = Quaternion.Euler(0, 0, 0);
         if (gravityDir == AnimController.gravityDirection.DOWN)
         {
             rotation = Quaternion.Euler(currY, currX, 0);
@@ -116,20 +117,22 @@ public class CameraControllerMouse : MonoBehaviour {
         }
         else if (gravityDir == AnimController.gravityDirection.LEFT)
         {
-            //rotation = Quaternion.Euler(currY, currX, 0);
-            rotation = Quaternion.Euler(currX, -currY, 0);
+            rotation = Quaternion.Euler(currY, currX, 0);
+            rotation2 = Quaternion.Euler(0, 0, -90);
+            //rotation = Quaternion.Euler(currX, -currY, 0);
             //change2 = new Vector3(currX, -currY, 0);
             change2 = rotation * dir;
         }
         else
         {
-            rotation = Quaternion.Euler(-currX, currY, 0);
+            rotation = Quaternion.Euler(currY, currX, 0);
+            rotation2 = Quaternion.Euler(0, 0, 90);
             //dir = new Vector3(0, -distance, 0);
         }
         change = rotation.eulerAngles;
 
 
-        camTransform.position = lookAt.position + rotation * dir;
+        camTransform.position = lookAt.position + rotation2 * (rotation * dir);
 
         if (gravityDir == AnimController.gravityDirection.UP)
         {
