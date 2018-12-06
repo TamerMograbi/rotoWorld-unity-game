@@ -211,7 +211,10 @@ public class AnimController : MonoBehaviour
         else if (gravityDir.Equals(gravityDirection.UP)) movement = new Vector3(-moveHorizontal * Mathf.Cos(camAngleY) + moveVertical * Mathf.Sin(camAngleY), 0.0f, moveVertical * Mathf.Cos(camAngleY) + moveHorizontal * Mathf.Sin(camAngleY));   // up = reversed left and right
         else if (gravityDir.Equals(gravityDirection.LEFT)) movement = new Vector3(0.0f, -moveHorizontal * Mathf.Cos(camAngleX) - moveVertical * Mathf.Sin(camAngleX), moveVertical * Mathf.Cos(camAngleX) + moveHorizontal * Mathf.Sin(camAngleX));
         else movement = new Vector3(0.0f, moveHorizontal * Mathf.Cos(camAngleX) - moveVertical * Mathf.Sin(camAngleX), moveVertical * Mathf.Cos(camAngleX) - moveHorizontal * Mathf.Sin(camAngleX));
+        if (sprinting)
+        {
             movement = movement * 2;
+        }
 
         if (!throwing)
         {
@@ -391,6 +394,19 @@ public class AnimController : MonoBehaviour
         }
         throwing = false;
         throwTime = 1.0f;
+    }
+
+    public float getHorizontalMovement()
+    {
+        return moveHorizontal;
+    }
+    public float getVerticalMovement()
+    {
+        return moveVertical;
+    }
+    public float getSpeed()
+    {
+        return speed;
     }
 
 }
