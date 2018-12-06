@@ -345,7 +345,7 @@ public class AnimController : MonoBehaviour
 
     public IEnumerator changeGravityTimer(gravityDirection dir)
     {
-        if (isGrounded)
+        if (isGrounded && dir != gravityDir)
         {
             rb.AddForce(getJumpDirectionVector()*6, ForceMode.Impulse);
             yield return new WaitForSeconds(0.5f);
