@@ -6,18 +6,25 @@ public class LetterCubeCtrl : MonoBehaviour {
 
     // Use this for initialization
     int levelIdx = 0;
-    string name;
+    string objName;
+    Renderer[] renderers;
+
 
     void Start () {
-        this.GetComponent<Renderer>().enabled = false;
-        name = this.gameObject.name;
-        if (name == "level 1 letter cube")
+        objName = this.gameObject.name;
+        if (objName == "level 1 letter cube")
         {
             levelIdx = 0;
         }
-        else if(name == "level 2 letter cube")
+        else if(objName == "level 2 letter cube")
         {
             levelIdx = 1;
+        }
+        this.GetComponent<Renderer>().enabled = false;
+        renderers = GetComponentsInChildren<Renderer>();
+        foreach (var r in renderers)
+        {
+            r.enabled = false;
         }
     }
 	
@@ -27,6 +34,10 @@ public class LetterCubeCtrl : MonoBehaviour {
         if(!this.GetComponent<Renderer>().enabled && GlobalCtrl.instance.levelsCompleted[levelIdx])
         {
             this.GetComponent<Renderer>().enabled = true;
+            foreach(var r in renderers)
+            {
+                r.enabled = true;
+            }
         }
 
 	}
