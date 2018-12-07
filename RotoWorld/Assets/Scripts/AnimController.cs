@@ -33,6 +33,7 @@ public class AnimController : MonoBehaviour
     private Camera cam;
     GameObject rock;
     float gravityRotSpeed;
+    string sceneName;
 
     //-------------- Throwing -------------
     private bool throwing = false;
@@ -63,6 +64,7 @@ public class AnimController : MonoBehaviour
         jumpAccel = Physics.gravity.magnitude / 2f;
         gravAccel = Physics.gravity.magnitude;
         rock = Resources.Load<GameObject>("Rock");
+        sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
 
     }
 
@@ -101,6 +103,18 @@ public class AnimController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
         {
             UnityEngine.SceneManagement.SceneManager.LoadScene("Level1");
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha0))
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("Level0");
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("Level1");
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("Level2");
         }
 
         if (Input.GetKeyDown(KeyCode.I) && !JPressed && !KPressed && !LPressed)
@@ -424,6 +438,21 @@ public class AnimController : MonoBehaviour
     public float getSpeed()
     {
         return speed;
+    }
+
+    public void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject.CompareTag("letter"))
+        {
+            if(sceneName == "Level1")//just completed level 1
+            {
+                GlobalCtrl.instance.levelsCompleted[0] = true;
+            }
+            else if(sceneName == "Level2")//just completed level 2
+            {
+                GlobalCtrl.instance.levelsCompleted[1] = true;
+            }
+        }
     }
 
 }
