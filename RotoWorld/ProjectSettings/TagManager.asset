@@ -4,9 +4,7 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Rock
-  - Switch
-  - Moving Platform
+  - letter
   layers:
   - Default
   - TransparentFX

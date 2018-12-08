@@ -5,7 +5,7 @@ using UnityEngine;
 public class AnimController : MonoBehaviour
 {
     public enum gravityDirection { DOWN, LEFT, RIGHT, UP };
-    public enum animState { IDLE = 0,RUN,SPRINT,THROW,JUMP}
+    public enum animState { IDLE = 0, RUN, SPRINT, THROW, JUMP }
     public Animator anim;
     private Rigidbody rb;
     float speed;
@@ -33,6 +33,7 @@ public class AnimController : MonoBehaviour
     private Camera cam;
     GameObject rock;
     float gravityRotSpeed;
+    string sceneName;
 
     //-------------- Throwing -------------
     private bool throwing = false;
@@ -63,17 +64,18 @@ public class AnimController : MonoBehaviour
         jumpAccel = Physics.gravity.magnitude / 2f;
         gravAccel = Physics.gravity.magnitude;
         rock = Resources.Load<GameObject>("Rock");
+        sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
 
     }
 
     bool isInInvertedRotation()
     {
         Vector3 rotV = transform.rotation.eulerAngles;
-        if (((Mathf.Abs(rotV.x - -180) < 2f) || (Mathf.Abs(rotV.x - 180) < 2f))  && Mathf.Abs(rotV.z - 0) < 2f)
+        if (((Mathf.Abs(rotV.x - -180) < 2f) || (Mathf.Abs(rotV.x - 180) < 2f)) && Mathf.Abs(rotV.z - 0) < 2f)
         {
             return true;
         }
-        if(Mathf.Abs(rotV.x - 0) < 2f && Mathf.Abs(rotV.z - 180) < 2f)
+        if (Mathf.Abs(rotV.x - 0) < 2f && Mathf.Abs(rotV.z - 180) < 2f)
         {
             return true;
         }
@@ -88,7 +90,7 @@ public class AnimController : MonoBehaviour
     {
         Vector3 rotV = transform.rotation.eulerAngles;
         Debug.Log("y = " + rotV.y + " z = " + rotV.z);
-        return Mathf.Abs(rotV.y - 0) < 2f && ((Mathf.Abs(rotV.z - -90) < 2f ) || (Mathf.Abs(rotV.z - 270) < 2f)) ;
+        return Mathf.Abs(rotV.y - 0) < 2f && ((Mathf.Abs(rotV.z - -90) < 2f) || (Mathf.Abs(rotV.z - 270) < 2f));
     }
     bool isRightRotation()
     {
@@ -102,6 +104,18 @@ public class AnimController : MonoBehaviour
         {
             UnityEngine.SceneManagement.SceneManager.LoadScene("Level1");
         }
+        if (Input.GetKeyDown(KeyCode.Alpha0))
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("Level0");
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("Level1");
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("Level2");
+        }
 
         if (Input.GetKeyDown(KeyCode.I) && !JPressed && !KPressed && !LPressed)
         {
@@ -110,7 +124,8 @@ public class AnimController : MonoBehaviour
             {
                 IPressed = true;
             }
-            gravityDir = gravityDirection.UP;
+            //gravityDir = gravityDirection.UP;
+            StartCoroutine(changeGravityTimer(gravityDirection.UP));
         }
         if (Input.GetKeyDown(KeyCode.J) && !IPressed && !KPressed && !LPressed)
         {
@@ -119,7 +134,8 @@ public class AnimController : MonoBehaviour
             {
                 JPressed = true;
             }
-            gravityDir = gravityDirection.LEFT;
+            StartCoroutine(changeGravityTimer(gravityDirection.LEFT));
+            //gravityDir = gravityDirection.LEFT;
         }
         if (Input.GetKeyDown(KeyCode.K) && !JPressed && !IPressed && !LPressed)
         {
@@ -128,7 +144,8 @@ public class AnimController : MonoBehaviour
             {
                 KPressed = true;
             }
-            gravityDir = gravityDirection.DOWN;
+            //gravityDir = gravityDirection.DOWN;
+            StartCoroutine(changeGravityTimer(gravityDirection.DOWN));
         }
         if (Input.GetKeyDown(KeyCode.L) && !JPressed && !KPressed && !IPressed)
         {
@@ -137,7 +154,9 @@ public class AnimController : MonoBehaviour
             {
                 LPressed = true;
             }
-            gravityDir = gravityDirection.RIGHT;
+            //gravityDir = gravityDirection.RIGHT;
+            StartCoroutine(changeGravityTimer(gravityDirection.RIGHT));
+
         }
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -148,19 +167,20 @@ public class AnimController : MonoBehaviour
             sprinting = true;
         else
             sprinting = false;
-        if (Input.GetKeyDown(KeyCode.Space) && IsGrounded()) {     
+        if (Input.GetKeyDown(KeyCode.Space) && IsGrounded())
+        {
             StartCoroutine(JumpTimer());
             jumping = true;
         }
         else
             jumping = false;
 
-        if(IPressed)
+        if (IPressed)
         {
             Vector3 movement = new Vector3(-1, 0, 1);
             Vector3 upVector = new Vector3(0, -1, 0);
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(movement, upVector), gravityRotSpeed);
-            if(isInInvertedRotation())
+            if (isInInvertedRotation())
             {
                 IPressed = false;
             }
@@ -170,7 +190,7 @@ public class AnimController : MonoBehaviour
             Vector3 movement = new Vector3(0, -1, 1);
             Vector3 upVector = new Vector3(1, 0, 0);
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(movement, upVector), gravityRotSpeed);
-            if(isLeftRotation())
+            if (isLeftRotation())
             {
                 JPressed = false;
             }
@@ -190,11 +210,11 @@ public class AnimController : MonoBehaviour
             Vector3 movement = new Vector3(0, 1, 1);
             Vector3 upVector = new Vector3(-1, 0, 0);
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(movement, upVector), gravityRotSpeed);
-            if(isRightRotation())
+            if (isRightRotation())
             {
                 LPressed = false;
             }
-            
+
         }
     }
     private void FixedUpdate()
@@ -239,6 +259,7 @@ public class AnimController : MonoBehaviour
                 }
 
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(movement, upVector), 0.15F);
+
                 if (isGrounded)
                 {
                     if (!sprinting)
@@ -261,7 +282,7 @@ public class AnimController : MonoBehaviour
                 {
                     anim.SetInteger("state", (int)animState.JUMP);
                 }
-                    
+
             }
             transform.Translate(movement * speed * Time.deltaTime, Space.World);
             if (IsGrounded())
@@ -336,6 +357,16 @@ public class AnimController : MonoBehaviour
         canJump = true;
     }
 
+    public IEnumerator changeGravityTimer(gravityDirection dir)
+    {
+        if (isGrounded && dir != gravityDir)
+        {
+            rb.AddForce(getJumpDirectionVector()*6, ForceMode.Impulse);
+            yield return new WaitForSeconds(0.5f);
+        }
+        gravityDir = dir;
+    }
+
     // Checks if player is on the ground (currently only works if gravity is pointing down) - Justin
     // https://www.youtube.com/watch?v=vdOFUFMiPDU - video I used as a jumping tutorial
     private bool IsGrounded()
@@ -353,7 +384,7 @@ public class AnimController : MonoBehaviour
 
                 //still need cases for front and back
         }
-        
+
     }
 
     public gravityDirection getGravityDir()
@@ -365,12 +396,12 @@ public class AnimController : MonoBehaviour
     {
         System.Random rnd = new System.Random();
         //add a bit of randomness in which director character is forced
-        int xForceDir = rnd.Next(-1,1);
+        int xForceDir = rnd.Next(-1, 1);
         int zForceDir = rnd.Next(-1, 1);
         Vector3 v = getJumpDirectionVector();//getDirectionVector();
         v.x = 3 * xForceDir;
         v.z = 3 * zForceDir;
-        if(v.x == 0 && v.z == 0)
+        if (v.x == 0 && v.z == 0)
         {
             v.x = 3;
         }
@@ -407,6 +438,22 @@ public class AnimController : MonoBehaviour
     public float getSpeed()
     {
         return speed;
+    }
+
+    public void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject.CompareTag("letter"))
+        {
+            if(sceneName == "Level1")//just completed level 1
+            {
+                GlobalCtrl.instance.levelsCompleted[0] = true;
+                GlobalCtrl.instance.dungeonMasterState = 1;
+            }
+            else if(sceneName == "Level2")//just completed level 2
+            {
+                GlobalCtrl.instance.levelsCompleted[1] = true;
+            }
+        }
     }
 
 }
