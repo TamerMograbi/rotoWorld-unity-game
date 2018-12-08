@@ -447,6 +447,7 @@ public class AnimController : MonoBehaviour
             if(sceneName == "Level1")//just completed level 1
             {
                 GlobalCtrl.instance.levelsCompleted[0] = true;
+                GlobalCtrl.instance.dungeonMasterState = 1;
             }
             else if(sceneName == "Level2")//just completed level 2
             {

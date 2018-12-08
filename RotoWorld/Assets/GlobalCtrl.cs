@@ -7,6 +7,7 @@ public class GlobalCtrl : MonoBehaviour {
     public static GlobalCtrl instance;
     public bool[] levelsCompleted;
     public int numOfLevels;
+    public int dungeonMasterState;
 
     private void Awake()
     {
@@ -25,5 +26,6 @@ public class GlobalCtrl : MonoBehaviour {
         {
             levelsCompleted[i] = false;
         }
+        dungeonMasterState = 0;
     }
 }
