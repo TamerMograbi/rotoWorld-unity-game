@@ -62,6 +62,7 @@ public class RockController : MonoBehaviour {
             gravAccel = 0;
             vspeed = 0;
             hspeed -= .5f * hspeed * Time.deltaTime;
+            lifetime = .5f;
         }
     }
 
