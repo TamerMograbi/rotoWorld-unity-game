@@ -8,25 +8,49 @@ public class MovingPlatformController : MonoBehaviour {
     public float yspeed;
     public float zspeed;
     public bool started;
+    public float reverseTime;
+    public float currTime;
 
 	// Use this for initialization
 	void Start () {
-		
+        currTime = reverseTime;
+
 	}
 	
 	// Update is called once per frame
 	void FixedUpdate () {
         if (started)
-        transform.Translate(new Vector3(xspeed, yspeed, zspeed) * Time.deltaTime);
+            transform.Translate(new Vector3(xspeed, yspeed, zspeed) * Time.deltaTime);
+
 	}
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnCollisionEnter(Collision other)
     {
-        if (collision.gameObject.layer == 0)
+        if (other.gameObject.CompareTag("Player"))
         {
-            xspeed *= -1;
-            yspeed *= -1;
-            zspeed *= -1;
+            if (other.gameObject.GetComponent<AnimController>().IsGrounded())
+                other.gameObject.transform.parent = transform;
         }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            other.gameObject.transform.parent = null;
+        }
+    }
+
+    public IEnumerator Countdown()
+    {
+        while (currTime > 0)
+        {
+            yield return new WaitForSeconds(0.1f);
+            currTime -= 0.1f;
+        }
+        xspeed *= -1;
+        yspeed *= -1;
+        zspeed *= -1;
+        currTime = reverseTime;
+        StartCoroutine(Countdown());
     }
 }

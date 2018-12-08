@@ -223,14 +223,19 @@ public class AnimController : MonoBehaviour
         moveVertical = Input.GetAxis("Vertical");
         moveHorizontal = Input.GetAxis("Horizontal");
         Vector3 movement;
-        float camAngleY = cam.transform.eulerAngles.y * Mathf.Deg2Rad;
-        float camAngleX = cam.transform.eulerAngles.x * Mathf.Deg2Rad;
+        /*float camAngleY = cam.transform.eulerAngles.y * Mathf.Deg2Rad;
+        float camAngleX = cam.transform.eulerAngles.x * Mathf.Deg2Rad;*/
+        float camAngleY = cam.GetComponent<CameraControllerMouse>().camEulerAngles.y * Mathf.Deg2Rad;
         //print(camAngleX);
         //print(camAngleY);
-        if (gravityDir.Equals(gravityDirection.DOWN)) movement = new Vector3(moveHorizontal * Mathf.Cos(camAngleY) + moveVertical * Mathf.Sin(camAngleY), 0.0f, moveVertical * Mathf.Cos(camAngleY) - moveHorizontal * Mathf.Sin(camAngleY));   // down = normal
+        /*if (gravityDir.Equals(gravityDirection.DOWN)) movement = new Vector3(moveHorizontal * Mathf.Cos(camAngleY) + moveVertical * Mathf.Sin(camAngleY), 0.0f, moveVertical * Mathf.Cos(camAngleY) - moveHorizontal * Mathf.Sin(camAngleY));   // down = normal
         else if (gravityDir.Equals(gravityDirection.UP)) movement = new Vector3(-moveHorizontal * Mathf.Cos(camAngleY) + moveVertical * Mathf.Sin(camAngleY), 0.0f, moveVertical * Mathf.Cos(camAngleY) + moveHorizontal * Mathf.Sin(camAngleY));   // up = reversed left and right
         else if (gravityDir.Equals(gravityDirection.LEFT)) movement = new Vector3(0.0f, -moveHorizontal * Mathf.Cos(camAngleX) - moveVertical * Mathf.Sin(camAngleX), moveVertical * Mathf.Cos(camAngleX) + moveHorizontal * Mathf.Sin(camAngleX));
-        else movement = new Vector3(0.0f, moveHorizontal * Mathf.Cos(camAngleX) - moveVertical * Mathf.Sin(camAngleX), moveVertical * Mathf.Cos(camAngleX) - moveHorizontal * Mathf.Sin(camAngleX));
+        else movement = new Vector3(0.0f, moveHorizontal * Mathf.Cos(camAngleX) - moveVertical * Mathf.Sin(camAngleX), moveVertical * Mathf.Cos(camAngleX) - moveHorizontal * Mathf.Sin(camAngleX));*/
+        if (gravityDir.Equals(gravityDirection.DOWN)) movement = new Vector3(moveHorizontal * Mathf.Cos(camAngleY) + moveVertical * Mathf.Sin(camAngleY), 0.0f, moveVertical * Mathf.Cos(camAngleY) - moveHorizontal * Mathf.Sin(camAngleY));   // down = normal
+        else if (gravityDir.Equals(gravityDirection.UP)) movement = new Vector3(-moveHorizontal * Mathf.Cos(camAngleY) - moveVertical * Mathf.Sin(camAngleY), 0.0f, moveVertical * Mathf.Cos(camAngleY) + moveHorizontal * Mathf.Sin(camAngleY));   // up = reversed left and right
+        else if (gravityDir.Equals(gravityDirection.LEFT)) movement = new Vector3(0.0f, -moveHorizontal * Mathf.Cos(camAngleY) - moveVertical * Mathf.Sin(camAngleY), moveVertical * Mathf.Cos(camAngleY) + moveHorizontal * Mathf.Sin(camAngleY));
+        else movement = new Vector3(0.0f, moveHorizontal * Mathf.Cos(camAngleY) + moveVertical * Mathf.Sin(camAngleY), moveVertical * Mathf.Cos(camAngleY) - moveHorizontal * Mathf.Sin(camAngleY));
         if (sprinting)
         {
             movement = movement * 2;
@@ -369,7 +374,7 @@ public class AnimController : MonoBehaviour
 
     // Checks if player is on the ground (currently only works if gravity is pointing down) - Justin
     // https://www.youtube.com/watch?v=vdOFUFMiPDU - video I used as a jumping tutorial
-    private bool IsGrounded()
+    public bool IsGrounded()
     {
         switch (gravityDir)
         {

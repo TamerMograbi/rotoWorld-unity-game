@@ -25,7 +25,9 @@ public class CameraControllerMouse : MonoBehaviour {
     /*--------- Mouse Camera --------*/
     public Transform lookAt;
     public Transform camTransform;
+    public Vector3 camEulerAngles;
     private Camera cam;
+    public GameObject mockCamera;
     private float distance = 10;
     public float currX = 0.0f;
     public float currY = 0.0f;
@@ -133,6 +135,7 @@ public class CameraControllerMouse : MonoBehaviour {
 
 
         camTransform.position = lookAt.position + rotation2 * (rotation * dir);
+        mockCamera.transform.position = Vector3.zero + Quaternion.Euler(currY, currX, 0) * dir;
 
         if (gravityDir == AnimController.gravityDirection.UP)
         {
@@ -215,7 +218,10 @@ public class CameraControllerMouse : MonoBehaviour {
 
         }
 
+        mockCamera.transform.LookAt(Vector3.zero);
+        camEulerAngles = mockCamera.transform.eulerAngles;
         camTransform.LookAt(lookAt.position, new Vector3(-Mathf.Sin(zangle * Mathf.Deg2Rad), Mathf.Cos(zangle * Mathf.Deg2Rad), 0));
+        
         //camTransform.LookAt(lookAt.position, new Vector3(1, 0, 0));
         //transform.position = player.transform.position + offset + yOffset;
         //Vector3 targetPos = player.transform.position + offset + yOffset;
