@@ -33,7 +33,7 @@ public class CameraControllerMouse : MonoBehaviour {
     public float currY = 0.0f;
     private float sensitivityX = 4.0f;
     private float sensitivityY = 1.0f;
-    private const float Y_ANGLE_MIN = 10.0f;
+    private const float Y_ANGLE_MIN = -10.0f;
     private const float Y_ANGLE_MAX = 60.0f;
     private const float MIN_DISTANCE = 3.0f;
     private const float MAX_DISTANCE = 6.0f;
@@ -147,7 +147,7 @@ public class CameraControllerMouse : MonoBehaviour {
                 zangle = Mathf.LerpAngle(zangle, 180, 3 * Time.deltaTime);
 
                 //stop rotation when the character is upside down
-                if (Mathf.Abs(-30 - xangle) < .1f && Mathf.Abs(0 - yangle) < .1f && Mathf.Abs(zangle - 180) < .1f)
+                if (/*Mathf.Abs(-30 - xangle) < .1f && Mathf.Abs(0 - yangle) < .1f &&*/ Mathf.Abs(zangle - 180) < .1f || Mathf.Abs(zangle - -180) < .1f)
                 {
                     //camTransform.eulerAngles = new Vector3(-30, 0, 180);
                     zangle = 180;
@@ -171,7 +171,7 @@ public class CameraControllerMouse : MonoBehaviour {
                 zangle = Mathf.LerpAngle(zangle, -90, 3 * Time.deltaTime);
 
                 //stop rotation when the character is upside down
-                if (Mathf.Abs(0 - xangle) < .1f && Mathf.Abs(-30 - yangle) < .1f && (Mathf.Abs(zangle - -90) < .1f) || Mathf.Abs(zangle - 270) < .1f)
+                if (/*Mathf.Abs(0 - xangle) < .1f && Mathf.Abs(-30 - yangle) < .1f &&*/ (Mathf.Abs(zangle - -90) < .1f) || Mathf.Abs(zangle - 270) < .1f)
                 {
                     zangle = -90;
                     rotated = true;
@@ -190,7 +190,7 @@ public class CameraControllerMouse : MonoBehaviour {
                 zangle = Mathf.LerpAngle(zangle, 0, 3 * Time.deltaTime);
 
                 //stop rotation when the character is upside down
-                if (Mathf.Abs(30 - xangle) < .1f && Mathf.Abs(0 - yangle) < .1f && (Mathf.Abs(zangle - 0) < .1f) || (Mathf.Abs(zangle - 360) < .1f))
+                if (/*Mathf.Abs(30 - xangle) < .1f && Mathf.Abs(0 - yangle) < .1f &&*/ (Mathf.Abs(zangle - 0) < .1f) || (Mathf.Abs(zangle - 360) < .1f))
                 {
                     zangle = 0;
                     rotated = true;
@@ -208,7 +208,7 @@ public class CameraControllerMouse : MonoBehaviour {
                 zangle = Mathf.LerpAngle(zangle, 90, 3 * Time.deltaTime);
 
                 //stop rotation when the character is upside down
-                if (Mathf.Abs(0 - xangle) < .1f && Mathf.Abs(30 - yangle) < .1f && Mathf.Abs(zangle - 90) < .1f)
+                if (/*Mathf.Abs(0 - xangle) < .1f && Mathf.Abs(30 - yangle) < .1f &&*/ Mathf.Abs(zangle - 90) < .1f || Mathf.Abs(zangle - -270) < .1f)
                 {
                     zangle = 90;
                     rotated = true;

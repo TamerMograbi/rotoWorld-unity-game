@@ -353,6 +353,58 @@ Prefab:
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ebb2686c99de0ee4f9e3c43f24349682, type: 2}
   m_IsPrefabAsset: 0
+--- !u!1001 &954432879
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4035384369707176, guid: 5c6a44be3e1b8ce4a9a636d992160070, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4035384369707176, guid: 5c6a44be3e1b8ce4a9a636d992160070, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4035384369707176, guid: 5c6a44be3e1b8ce4a9a636d992160070, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4035384369707176, guid: 5c6a44be3e1b8ce4a9a636d992160070, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4035384369707176, guid: 5c6a44be3e1b8ce4a9a636d992160070, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4035384369707176, guid: 5c6a44be3e1b8ce4a9a636d992160070, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4035384369707176, guid: 5c6a44be3e1b8ce4a9a636d992160070, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4035384369707176, guid: 5c6a44be3e1b8ce4a9a636d992160070, type: 2}
+      propertyPath: m_RootOrder
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 114869533020455376, guid: 5c6a44be3e1b8ce4a9a636d992160070,
+        type: 2}
+      propertyPath: triggerObject
+      value: 
+      objectReference: {fileID: 413405799}
+    - target: {fileID: 114235050886534784, guid: 5c6a44be3e1b8ce4a9a636d992160070,
+        type: 2}
+      propertyPath: triggerObject
+      value: 
+      objectReference: {fileID: 413405799}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5c6a44be3e1b8ce4a9a636d992160070, type: 2}
+  m_IsPrefabAsset: 0
 --- !u!1 &1199199202
 GameObject:
   m_ObjectHideFlags: 0
