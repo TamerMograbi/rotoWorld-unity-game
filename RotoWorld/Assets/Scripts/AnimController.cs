@@ -34,6 +34,7 @@ public class AnimController : MonoBehaviour
     GameObject rock;
     float gravityRotSpeed;
     string sceneName;
+    
 
     //-------------- Throwing -------------
     private bool throwing = false;
@@ -65,6 +66,7 @@ public class AnimController : MonoBehaviour
         gravAccel = Physics.gravity.magnitude;
         rock = Resources.Load<GameObject>("Rock");
         sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        
 
     }
 
@@ -216,6 +218,8 @@ public class AnimController : MonoBehaviour
             }
 
         }
+
+       
     }
     private void FixedUpdate()
     {
