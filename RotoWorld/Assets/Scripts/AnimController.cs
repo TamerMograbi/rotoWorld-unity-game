@@ -237,7 +237,7 @@ public class AnimController : MonoBehaviour
         else if (gravityDir.Equals(gravityDirection.LEFT)) movement = new Vector3(0.0f, -moveHorizontal * Mathf.Cos(camAngleX) - moveVertical * Mathf.Sin(camAngleX), moveVertical * Mathf.Cos(camAngleX) + moveHorizontal * Mathf.Sin(camAngleX));
         else movement = new Vector3(0.0f, moveHorizontal * Mathf.Cos(camAngleX) - moveVertical * Mathf.Sin(camAngleX), moveVertical * Mathf.Cos(camAngleX) - moveHorizontal * Mathf.Sin(camAngleX));*/
         if (gravityDir.Equals(gravityDirection.DOWN)) movement = new Vector3(moveHorizontal * Mathf.Cos(camAngleY) + moveVertical * Mathf.Sin(camAngleY), 0.0f, moveVertical * Mathf.Cos(camAngleY) - moveHorizontal * Mathf.Sin(camAngleY));   // down = normal
-        else if (gravityDir.Equals(gravityDirection.UP)) movement = new Vector3(-moveHorizontal * Mathf.Cos(camAngleY) - moveVertical * Mathf.Sin(camAngleY), 0.0f, moveVertical * Mathf.Cos(camAngleY) + moveHorizontal * Mathf.Sin(camAngleY));   // up = reversed left and right
+        else if (gravityDir.Equals(gravityDirection.UP)) movement = new Vector3(-moveHorizontal * Mathf.Cos(camAngleY) - moveVertical * Mathf.Sin(camAngleY), 0.0f, moveVertical * Mathf.Cos(camAngleY) - moveHorizontal * Mathf.Sin(camAngleY));   // up = reversed left and right
         else if (gravityDir.Equals(gravityDirection.LEFT)) movement = new Vector3(0.0f, -moveHorizontal * Mathf.Cos(camAngleY) - moveVertical * Mathf.Sin(camAngleY), moveVertical * Mathf.Cos(camAngleY) + moveHorizontal * Mathf.Sin(camAngleY));
         else movement = new Vector3(0.0f, moveHorizontal * Mathf.Cos(camAngleY) + moveVertical * Mathf.Sin(camAngleY), moveVertical * Mathf.Cos(camAngleY) - moveHorizontal * Mathf.Sin(camAngleY));
         if (sprinting)
