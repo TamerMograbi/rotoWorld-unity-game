@@ -29,17 +29,23 @@ public class CameraControllerMouse : MonoBehaviour {
     private Camera cam;
     public GameObject mockCamera;
     private float distance = 10;
+    private float collisionDistance = -1;
+    private float camDistance = 10;
     public float currX = 0.0f;
     public float currY = 0.0f;
     private float sensitivityX = 4.0f;
     private float sensitivityY = 1.0f;
-    private const float Y_ANGLE_MIN = -10.0f;
+    private const float Y_ANGLE_MIN = -30.0f;
     private const float Y_ANGLE_MAX = 60.0f;
     private const float MIN_DISTANCE = 3.0f;
     private const float MAX_DISTANCE = 6.0f;
 
     public Vector3 change;
     public Vector3 change2;
+
+    /*public CollisionHandler collision = new CollisionHandler();
+    Vector3 destination = Vector3.zero;
+    Vector3 adjustedDestination = Vector3.zero;*/
 
     void Start () {
         player = GameObject.Find("Player");
@@ -54,6 +60,11 @@ public class CameraControllerMouse : MonoBehaviour {
         // mouse camera
         camTransform = transform;
         cam = Camera.main;
+
+        // collision detection
+        /*collision.Initialize(cam);
+        collision.UpdateClipPoints(transform.position, transform.rotation, ref collision.adjustedClipPoints);
+        collision.UpdateClipPoints(destination, transform.rotation, ref collision.desiredClipPoints);*/
     }
 
     private void Update()
@@ -102,7 +113,42 @@ public class CameraControllerMouse : MonoBehaviour {
             gravityDir = animCtrl.getGravityDir();
             rotated = false;
         }
-        Vector3 dir = new Vector3(0, 0, -distance);
+
+        /*collision.CheckColliding(camTransform.position);
+        collisionDistance = collision.GetAdjustedDistance(camTransform.position);
+        if (collision.colliding)
+            camDistance = collisionDistance * distance;
+        else*/
+        camDistance = distance;
+
+        float lockY = -999.0f;
+        float lockX = -999.0f;
+        if (currY < 5.0f)
+        {
+            if (gravityDir == AnimController.gravityDirection.DOWN)
+            {
+                lockY = transform.position.y;
+                lookAt.transform.position = new Vector3(player.transform.position.x, player.transform.position.y + -(currY - 5.0f) / 10, player.transform.position.z);
+            }
+            if (gravityDir == AnimController.gravityDirection.UP)
+            {
+                lockY = transform.position.y;
+                lookAt.transform.position = new Vector3(player.transform.position.x, player.transform.position.y - -(currY - 5.0f) / 10, player.transform.position.z);
+            }
+            if (gravityDir == AnimController.gravityDirection.LEFT)
+            {
+                lockX = transform.position.x;
+                lookAt.transform.position = new Vector3(player.transform.position.x + -(currY - 5.0f) / 10, player.transform.position.y, player.transform.position.z);
+            }
+            if (gravityDir == AnimController.gravityDirection.RIGHT)
+            {
+                lockX = transform.position.x;
+                lookAt.transform.position = new Vector3(player.transform.position.x - -(currY - 5.0f) / 10, player.transform.position.y, player.transform.position.z);
+            }
+            //currY = 5.0f;
+        }
+
+        Vector3 dir = new Vector3(0, 0, -camDistance);
         Quaternion rotation = new Quaternion();
         Quaternion rotation2 = Quaternion.Euler(0, 0, 0);
         if (gravityDir == AnimController.gravityDirection.DOWN)
@@ -136,6 +182,10 @@ public class CameraControllerMouse : MonoBehaviour {
 
         camTransform.position = lookAt.position + rotation2 * (rotation * dir);
         mockCamera.transform.position = Vector3.zero + Quaternion.Euler(currY, currX, 0) * dir;
+        if (lockY != -999.0f)
+        {
+            camTransform.position = new Vector3(lockX == -999.0f ? camTransform.position.x : Mathf.Clamp(camTransform.position.x, lockX, lockX), lockY == -999.0f ? camTransform.position.y : Mathf.Clamp(camTransform.position.y, lockY, lockY), camTransform.position.z);
+        }
 
         if (gravityDir == AnimController.gravityDirection.UP)
         {
@@ -228,4 +278,95 @@ public class CameraControllerMouse : MonoBehaviour {
         //transform.position = Vector3.Lerp(transform.position, targetPos, 4 * Time.deltaTime);
     }
 
+
+    // Camera collision with environment 
+    //https://www.youtube.com/watch?v=Uqi2jEgvVsI
+    /*[System.Serializable]
+    public class CollisionHandler
+    {
+        public LayerMask collisionLayer;
+
+        [HideInInspector]
+        public bool colliding = false;
+        [HideInInspector]
+        public Vector3[] adjustedClipPoints;
+        [HideInInspector]
+        public Vector3[] desiredClipPoints;
+
+        Camera camera;
+
+        public void Initialize(Camera cam)
+        {
+            camera = cam;
+            adjustedClipPoints = new Vector3[5];
+            desiredClipPoints = new Vector3[5];
+        }
+
+        private bool CollisionAtClipPoints(Vector3[] clipPoints, Vector3 fromPos)
+        {
+            for (int i = 0; i < clipPoints.Length; i++)
+            {
+                Ray ray = new Ray(fromPos, clipPoints[i] - fromPos);
+                float rayDist = Vector3.Distance(clipPoints[i], fromPos);
+                if (Physics.Raycast(ray, rayDist, collisionLayer))
+                    return true;
+                
+            }
+            return false;
+        }
+
+        public void UpdateClipPoints(Vector3 camPos, Quaternion atRotation, ref Vector3[] arr)
+        {
+            arr = new Vector3[5];
+
+            float z = camera.nearClipPlane;
+            float x = Mathf.Tan(camera.fieldOfView / 3.41f) * z;
+            float y = x / camera.aspect;
+
+            // top left
+            arr[0] = (atRotation * new Vector3(-x, y, z)) + camPos;
+            // top right
+            arr[1] = (atRotation * new Vector3(x, y, z)) + camPos;
+            // bot left
+            arr[2] = (atRotation * new Vector3(-x, -y, z)) + camPos;
+            // bot right
+            arr[3] = (atRotation * new Vector3(x, -y, z)) + camPos;
+            // cam position
+            arr[4] = camPos - camera.transform.forward;
+        }
+
+        public float GetAdjustedDistance(Vector3 from)
+        {
+            float dist = 1;
+
+            for (int i = 0; i < desiredClipPoints.Length; i++)
+            {
+                Ray ray = new Ray(from, desiredClipPoints[i] - from);
+                RaycastHit hit;
+                if (Physics.Raycast(ray, out hit))
+                {
+                    if (dist == 1)
+                        dist = hit.distance;
+                    else
+                    {
+                        if (hit.distance < dist)
+                            dist = hit.distance;
+                    }
+                }
+            }
+
+            if (dist == 1)
+                return 0;
+            else
+                return dist;
+        }
+
+        public void CheckColliding(Vector3 targetPos)
+        {
+            if (CollisionAtClipPoints(desiredClipPoints, targetPos))
+                colliding = true;
+            else
+                colliding = false;
+        }
+    }*/
 }
