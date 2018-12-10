@@ -209,6 +209,34 @@ Prefab:
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bf967a09a46702b4786a83ef99972a1d, type: 2}
   m_IsPrefabAsset: 0
+--- !u!1 &851705898
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 851705899}
+  m_Layer: 0
+  m_Name: MockCamera
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &851705899
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 851705898}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1061197599
 Prefab:
   m_ObjectHideFlags: 0
@@ -774,6 +802,8 @@ MonoBehaviour:
   zangle: 0
   lookAt: {fileID: 1277653122}
   camTransform: {fileID: 0}
+  camEulerAngles: {x: 0, y: 0, z: 0}
+  mockCamera: {fileID: 851705898}
   currX: 0
   currY: 0
   change: {x: 0, y: 0, z: 0}
