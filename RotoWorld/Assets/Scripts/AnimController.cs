@@ -309,7 +309,7 @@ public class AnimController : MonoBehaviour
             anim.SetInteger("state", (int)animState.THROW);
         }
 
-        if (!cam.GetComponent<CameraControllerMouse>().rotating)
+        /*if (!cam.GetComponent<CameraControllerMouse>().rotating)
         {
             if (gravityDir == gravityDirection.DOWN)
             {
@@ -326,8 +326,8 @@ public class AnimController : MonoBehaviour
             else if (gravityDir == gravityDirection.RIGHT)
             {
                 transform.eulerAngles = new Vector3(transform.eulerAngles.x, 0, 90);
-            }*/
-        }
+            }
+        }*/
         transform.localScale = new Vector3(1, 1, 1);
 
         // -------- Throw Rock -----------
