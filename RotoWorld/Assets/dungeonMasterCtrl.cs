@@ -19,7 +19,7 @@ public class dungeonMasterCtrl : MonoBehaviour {
         seqOfTexts0[0] = "yo bro, ya'll need to guess my name If you want my treasure";
         seqOfTexts0[1] = "you need to enter each level and find the cube with one of the letters on it";
         seqOfTexts0[2] = "After that, you'll need to rearrange them here.";
-        seqOfTexts0[3] = "hit the yellow switch and if the order is right, then you win and get my treasure";
+        seqOfTexts0[3] = "If the order is right, then you win and get my treasure";
         seqOfTexts0[4] = "If it ain't, then ama divide by zero and make the game crash into oblivion";
         seqOfTexts0[5] = "Go on, try me. see If I'm joking";
 
