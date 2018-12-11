@@ -328,7 +328,6 @@ public class AnimController : MonoBehaviour
                 transform.eulerAngles = new Vector3(transform.eulerAngles.x, 0, 90);
             }*/
         }
-        transform.localScale = new Vector3(1, 1, 1);
 
         // -------- Throw Rock -----------
         if (Input.GetKeyDown(KeyCode.LeftControl) && anim.GetInteger("state") == 0 && IsGrounded())
@@ -396,7 +395,6 @@ public class AnimController : MonoBehaviour
         {
             rb.AddForce(getJumpDirectionVector()*6, ForceMode.Impulse);
             yield return new WaitForSeconds(0.5f);
-            FindObjectOfType<AudioManager>().Play("warp");
         }
         gravityDir = dir;
     }
