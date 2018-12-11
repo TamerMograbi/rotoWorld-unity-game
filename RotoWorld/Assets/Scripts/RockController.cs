@@ -24,9 +24,9 @@ public class RockController : MonoBehaviour {
         animController = GameObject.Find("Player").GetComponent<AnimController>();
         player = GameObject.Find("Player");
         cam = Camera.main;
-        hspeed = 6;
+        hspeed = 5;
         gravityDir = animController.getGravityDir();
-        vspeed = .5f * Physics.gravity.magnitude;
+        vspeed = .3f * Physics.gravity.magnitude;
         gravAccel = .5f * -Physics.gravity.magnitude;
         camAngleX = cam.transform.eulerAngles.x;
         camAngleY = cam.transform.eulerAngles.y;
