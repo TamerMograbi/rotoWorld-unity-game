@@ -53,11 +53,11 @@ public class MarkerCtrl : MonoBehaviour {
                     res = "letter2";
                     break;
                 }
-            //case "letter 3 marker":
-            //    {
-            //        res = "letter3";
-            //        break;
-            //    }
+            case "letter 3 marker":
+                {
+                    res = "letter3";
+                    break;
+                }
         }
         return res;
     }
