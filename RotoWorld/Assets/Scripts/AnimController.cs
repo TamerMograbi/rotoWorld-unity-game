@@ -328,6 +328,7 @@ public class AnimController : MonoBehaviour
                 transform.eulerAngles = new Vector3(transform.eulerAngles.x, 0, 90);
             }*/
         }
+        transform.localScale = new Vector3(1, 1, 1);
 
         // -------- Throw Rock -----------
         if (Input.GetKeyDown(KeyCode.LeftControl) && anim.GetInteger("state") == 0 && IsGrounded())
