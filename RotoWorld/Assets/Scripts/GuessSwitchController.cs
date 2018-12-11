@@ -39,7 +39,15 @@ public class GuessSwitchController : MonoBehaviour {
             FindObjectOfType<AudioManager>().Play("switch");
             switchPad.transform.position = new Vector3(switchPad.transform.position.x, switchPad.transform.position.y - .035f, switchPad.transform.position.z);
             StartCoroutine(Countdown());
-            //Destroy(collision.gameObject);
+            if(FindObjectOfType<GameMasterCtrl>().GameWon())
+            {
+                Debug.Log("VICTORY");
+            }
+            else
+            {
+                Debug.Log("WRONG COMBO");
+            }
+            
         }
     }
 
