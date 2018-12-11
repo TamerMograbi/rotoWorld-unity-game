@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class AnimController : MonoBehaviour
 {
@@ -35,6 +36,10 @@ public class AnimController : MonoBehaviour
     GameObject rock;
     float gravityRotSpeed;
     string sceneName;
+
+    public Text victoryText;
+
+    private float endLvlTimer = 3.0f;
     
 
     //-------------- Throwing -------------
@@ -465,6 +470,16 @@ public class AnimController : MonoBehaviour
         throwTime = 1.0f;
     }
 
+    public IEnumerator EndLevelCountdown()
+    {
+        while (endLvlTimer > 0)
+        {
+            yield return new WaitForSeconds(0.1f);
+            endLvlTimer -= .1f;
+        }
+        UnityEngine.SceneManagement.SceneManager.LoadScene("Level0");
+    }
+
     public float getHorizontalMovement()
     {
         return moveHorizontal;
@@ -486,15 +501,25 @@ public class AnimController : MonoBehaviour
             {
                 GlobalCtrl.instance.levelsCompleted[0] = true;
                 GlobalCtrl.instance.dungeonMasterState = 1;
+                Destroy(other.gameObject);
+                victoryText.text = "You have collected a letter!";
+                StartCoroutine(EndLevelCountdown());
             }
             else if(sceneName == "Level2")//just completed level 2
             {
                 GlobalCtrl.instance.levelsCompleted[1] = true;
+                Destroy(other.gameObject);
+                victoryText.text = "You have collected a letter!";
+                StartCoroutine(EndLevelCountdown());
             }
             else if(sceneName == "TrainingLevel")
             {
                 GlobalCtrl.instance.levelsCompleted[2] = true;
+                Destroy(other.gameObject);
+                victoryText.text = "You have collected a letter!";
+                StartCoroutine(EndLevelCountdown());
             }
+
         }
 
         if (other.gameObject.CompareTag("Death Box"))
