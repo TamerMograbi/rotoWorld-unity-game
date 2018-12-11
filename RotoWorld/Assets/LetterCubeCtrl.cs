@@ -20,6 +20,10 @@ public class LetterCubeCtrl : MonoBehaviour {
         {
             levelIdx = 1;
         }
+        else if(objName == "level 3 letter cube")
+        {
+            levelIdx = 2;//training level index
+        }
         this.GetComponent<Renderer>().enabled = false;
         renderers = GetComponentsInChildren<Renderer>();
         foreach (var r in renderers)
