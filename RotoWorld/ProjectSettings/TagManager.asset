@@ -9,6 +9,7 @@ TagManager:
   - Switch
   - letter1
   - letter2
+  - Death Box
   layers:
   - Default
   - TransparentFX
