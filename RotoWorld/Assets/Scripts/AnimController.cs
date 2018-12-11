@@ -297,7 +297,10 @@ public class AnimController : MonoBehaviour
             if (IsGrounded())
             {
                 if (jumping && canJump)
+                {
+                    FindObjectOfType<AudioManager>().Play("jump");
                     rb.AddForce(getJumpDirectionVector() * (sprinting ? jumpAccel * 1.5f : jumpAccel), ForceMode.Impulse);
+                }
             }
             rb.AddForce(getCurrentGravity());
         }
