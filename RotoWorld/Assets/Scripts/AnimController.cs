@@ -487,6 +487,10 @@ public class AnimController : MonoBehaviour
             {
                 GlobalCtrl.instance.levelsCompleted[1] = true;
             }
+            else if(sceneName == "TrainingLevel")
+            {
+                GlobalCtrl.instance.levelsCompleted[2] = true;
+            }
         }
 
         if (other.gameObject.CompareTag("Death Box"))

@@ -10,6 +10,7 @@ TagManager:
   - letter1
   - letter2
   - Death Box
+  - letter3
   layers:
   - Default
   - TransparentFX
