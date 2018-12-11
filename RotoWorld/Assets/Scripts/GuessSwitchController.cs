@@ -1,13 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GuessSwitchController : MonoBehaviour {
 
     public bool hit;
     private bool started = false;
     public GameObject switchPad;
-    //public GameObject triggerObject;
+    public Text guessText;
     private float waitTime = 2.0f;
 	// Use this for initialization
 	void Start () {
@@ -41,11 +42,11 @@ public class GuessSwitchController : MonoBehaviour {
             StartCoroutine(Countdown());
             if(FindObjectOfType<GameMasterCtrl>().GameWon())
             {
-                Debug.Log("VICTORY");
+                StartCoroutine(GuessTextTimer("VICTORY"));
             }
             else
             {
-                Debug.Log("WRONG COMBO");
+                StartCoroutine(GuessTextTimer("WRONG LETTER COMBO!"));
             }
             
         }
@@ -62,5 +63,12 @@ public class GuessSwitchController : MonoBehaviour {
         hit = false;
         FindObjectOfType<AudioManager>().Play("switch");
         switchPad.transform.position = new Vector3(switchPad.transform.position.x, switchPad.transform.position.y + .035f, switchPad.transform.position.z);
+    }
+
+    public IEnumerator GuessTextTimer(string str)
+    {
+        guessText.text = str;
+        yield return new WaitForSeconds(2f);
+        guessText.text = "";
     }
 }
