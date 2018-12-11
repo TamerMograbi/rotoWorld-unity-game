@@ -33,9 +33,10 @@ public class SwitchController : MonoBehaviour {
     public void OnCollisionEnter(Collision collision)
     {
         print(collision.gameObject.tag);
-        if (collision.gameObject.CompareTag("Rock")) //default
+        if (collision.gameObject.CompareTag("Rock") && !hit) //default
         {
             hit = true;
+            FindObjectOfType<AudioManager>().Play("switch");
             //Destroy(collision.gameObject);
         }
     }
