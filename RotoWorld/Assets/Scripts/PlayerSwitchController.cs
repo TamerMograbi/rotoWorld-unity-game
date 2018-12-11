@@ -33,9 +33,10 @@ public class PlayerSwitchController : MonoBehaviour {
     public void OnCollisionEnter(Collision collision)
     {
         print(collision.gameObject.tag);
-        if (collision.gameObject.CompareTag("Player")) //default
+        if (collision.gameObject.CompareTag("Player") && !hit) //default
         {
             hit = true;
+            FindObjectOfType<AudioManager>().Play("switch");
             //Destroy(collision.gameObject);
         }
     }
