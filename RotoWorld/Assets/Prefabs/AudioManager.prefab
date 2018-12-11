@@ -70,3 +70,9 @@ MonoBehaviour:
     pitch: 1
     loop: 0
     source: {fileID: 0}
+  - name: switch
+    clip: {fileID: 8300000, guid: 2592561e3940c5e49b7f4b9ccdfaedca, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
