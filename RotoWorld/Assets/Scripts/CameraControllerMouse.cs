@@ -43,9 +43,6 @@ public class CameraControllerMouse : MonoBehaviour {
     public Vector3 change;
     public Vector3 change2;
 
-    /*public CollisionHandler collision = new CollisionHandler();
-    Vector3 destination = Vector3.zero;
-    Vector3 adjustedDestination = Vector3.zero;*/
 
     void Start () {
         player = GameObject.Find("Player");
@@ -61,10 +58,6 @@ public class CameraControllerMouse : MonoBehaviour {
         camTransform = transform;
         cam = Camera.main;
 
-        // collision detection
-        /*collision.Initialize(cam);
-        collision.UpdateClipPoints(transform.position, transform.rotation, ref collision.adjustedClipPoints);
-        collision.UpdateClipPoints(destination, transform.rotation, ref collision.desiredClipPoints);*/
     }
 
     private void Update()
@@ -113,12 +106,6 @@ public class CameraControllerMouse : MonoBehaviour {
             gravityDir = animCtrl.getGravityDir();
             rotated = false;
         }
-
-        /*collision.CheckColliding(camTransform.position);
-        collisionDistance = collision.GetAdjustedDistance(camTransform.position);
-        if (collision.colliding)
-            camDistance = collisionDistance * distance;
-        else*/
         camDistance = distance;
 
         float lockY = -999.0f;
@@ -278,95 +265,4 @@ public class CameraControllerMouse : MonoBehaviour {
         //transform.position = Vector3.Lerp(transform.position, targetPos, 4 * Time.deltaTime);
     }
 
-
-    // Camera collision with environment 
-    //https://www.youtube.com/watch?v=Uqi2jEgvVsI
-    /*[System.Serializable]
-    public class CollisionHandler
-    {
-        public LayerMask collisionLayer;
-
-        [HideInInspector]
-        public bool colliding = false;
-        [HideInInspector]
-        public Vector3[] adjustedClipPoints;
-        [HideInInspector]
-        public Vector3[] desiredClipPoints;
-
-        Camera camera;
-
-        public void Initialize(Camera cam)
-        {
-            camera = cam;
-            adjustedClipPoints = new Vector3[5];
-            desiredClipPoints = new Vector3[5];
-        }
-
-        private bool CollisionAtClipPoints(Vector3[] clipPoints, Vector3 fromPos)
-        {
-            for (int i = 0; i < clipPoints.Length; i++)
-            {
-                Ray ray = new Ray(fromPos, clipPoints[i] - fromPos);
-                float rayDist = Vector3.Distance(clipPoints[i], fromPos);
-                if (Physics.Raycast(ray, rayDist, collisionLayer))
-                    return true;
-                
-            }
-            return false;
-        }
-
-        public void UpdateClipPoints(Vector3 camPos, Quaternion atRotation, ref Vector3[] arr)
-        {
-            arr = new Vector3[5];
-
-            float z = camera.nearClipPlane;
-            float x = Mathf.Tan(camera.fieldOfView / 3.41f) * z;
-            float y = x / camera.aspect;
-
-            // top left
-            arr[0] = (atRotation * new Vector3(-x, y, z)) + camPos;
-            // top right
-            arr[1] = (atRotation * new Vector3(x, y, z)) + camPos;
-            // bot left
-            arr[2] = (atRotation * new Vector3(-x, -y, z)) + camPos;
-            // bot right
-            arr[3] = (atRotation * new Vector3(x, -y, z)) + camPos;
-            // cam position
-            arr[4] = camPos - camera.transform.forward;
-        }
-
-        public float GetAdjustedDistance(Vector3 from)
-        {
-            float dist = 1;
-
-            for (int i = 0; i < desiredClipPoints.Length; i++)
-            {
-                Ray ray = new Ray(from, desiredClipPoints[i] - from);
-                RaycastHit hit;
-                if (Physics.Raycast(ray, out hit))
-                {
-                    if (dist == 1)
-                        dist = hit.distance;
-                    else
-                    {
-                        if (hit.distance < dist)
-                            dist = hit.distance;
-                    }
-                }
-            }
-
-            if (dist == 1)
-                return 0;
-            else
-                return dist;
-        }
-
-        public void CheckColliding(Vector3 targetPos)
-        {
-            if (CollisionAtClipPoints(desiredClipPoints, targetPos))
-                colliding = true;
-            else
-                colliding = false;
-        }
-    }*/
 }
