@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class AnimController : MonoBehaviour
 {
@@ -35,7 +36,11 @@ public class AnimController : MonoBehaviour
     GameObject rock;
     float gravityRotSpeed;
     string sceneName;
-    
+
+    public Text victoryText;
+
+    private float endLvlTimer = 3.0f;
+
 
     //-------------- Throwing -------------
     private bool throwing = false;
@@ -223,7 +228,7 @@ public class AnimController : MonoBehaviour
 
         }
 
-       
+
     }
     private void FixedUpdate()
     {
@@ -398,7 +403,7 @@ public class AnimController : MonoBehaviour
     {
         if (isGrounded && dir != gravityDir)
         {
-            rb.AddForce(getJumpDirectionVector()*6, ForceMode.Impulse);
+            rb.AddForce(getJumpDirectionVector() * 6, ForceMode.Impulse);
             yield return new WaitForSeconds(0.5f);
             FindObjectOfType<AudioManager>().Play("warp");
         }
@@ -465,6 +470,16 @@ public class AnimController : MonoBehaviour
         throwTime = 1.0f;
     }
 
+    public IEnumerator EndLevelCountdown()
+    {
+        while (endLvlTimer > 0)
+        {
+            yield return new WaitForSeconds(0.1f);
+            endLvlTimer -= .1f;
+        }
+        UnityEngine.SceneManagement.SceneManager.LoadScene("Level0");
+    }
+
     public float getHorizontalMovement()
     {
         return moveHorizontal;
@@ -480,21 +495,31 @@ public class AnimController : MonoBehaviour
 
     public void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.CompareTag("letter"))
+        if (other.gameObject.CompareTag("letter"))
         {
-            if(sceneName == "Level1")//just completed level 1
+            if (sceneName == "Level1")//just completed level 1
             {
                 GlobalCtrl.instance.levelsCompleted[0] = true;
                 GlobalCtrl.instance.dungeonMasterState = 1;
+                Destroy(other.gameObject);
+                victoryText.text = "You have collected a letter!";
+                StartCoroutine(EndLevelCountdown());
             }
-            else if(sceneName == "Level2")//just completed level 2
+            else if (sceneName == "Level2")//just completed level 2
             {
                 GlobalCtrl.instance.levelsCompleted[1] = true;
+                Destroy(other.gameObject);
+                victoryText.text = "You have collected a letter!";
+                StartCoroutine(EndLevelCountdown());
             }
-            else if(sceneName == "TrainingLevel")
+            else if (sceneName == "TrainingLevel")
             {
                 GlobalCtrl.instance.levelsCompleted[2] = true;
+                Destroy(other.gameObject);
+                victoryText.text = "You have collected a letter!";
+                StartCoroutine(EndLevelCountdown());
             }
+
         }
 
         if (other.gameObject.CompareTag("Death Box"))
