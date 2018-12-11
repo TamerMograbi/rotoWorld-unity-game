@@ -118,6 +118,10 @@ public class AnimController : MonoBehaviour
         {
             UnityEngine.SceneManagement.SceneManager.LoadScene("Level2");
         }
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("TrainingLevel");
+        }
 
         if (Input.GetKeyDown(KeyCode.I) && !JPressed && !KPressed && !LPressed)
         {
