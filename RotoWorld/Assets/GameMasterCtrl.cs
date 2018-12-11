@@ -16,17 +16,24 @@ public class GameMasterCtrl : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        //cubes are in right order on the markers
         if (marker1Ctrl.GetletterIsInPlace())
         {
-            Debug.Log("letter L is in place");
+            Debug.Log("letter 1 in place");
         }
         if (marker2Ctrl.GetletterIsInPlace())
         {
-            Debug.Log("letter 2 is in place");
+            Debug.Log("letter 2 in place");
         }
-        if(marker3Ctrl.GetletterIsInPlace())
+        if (marker3Ctrl.GetletterIsInPlace())
         {
-            Debug.Log("letter 3 is in place");
+            Debug.Log("letter 3 in place");
         }
+
+
+    }
+    public bool GameWon()
+    {
+        return marker1Ctrl.GetletterIsInPlace() && marker2Ctrl.GetletterIsInPlace() && marker3Ctrl.GetletterIsInPlace();
     }
 }

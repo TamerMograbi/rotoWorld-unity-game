@@ -19,6 +19,7 @@ public class MarkerCtrl : MonoBehaviour {
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log("letterCubeTag = " + letterCubeTag);
         if(other.gameObject.CompareTag(letterCubeTag))
         {
             letterIsInPlace = true;
