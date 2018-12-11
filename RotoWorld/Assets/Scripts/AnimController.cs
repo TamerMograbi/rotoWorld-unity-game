@@ -30,7 +30,7 @@ public class AnimController : MonoBehaviour
     private bool jumping = false;
     public bool isGrounded = false;
     private bool canJump = true;
-    private float finishedTime = .3f;
+    private float finishedTime = .2f;
     private Camera cam;
     GameObject rock;
     float gravityRotSpeed;
@@ -386,7 +386,7 @@ public class AnimController : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
             finishedTime -= 0.1f;
         }
-        finishedTime = .3f;
+        finishedTime = .2f;
         canJump = true;
     }
 
