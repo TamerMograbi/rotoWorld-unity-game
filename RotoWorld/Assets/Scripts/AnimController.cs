@@ -396,6 +396,7 @@ public class AnimController : MonoBehaviour
         {
             rb.AddForce(getJumpDirectionVector()*6, ForceMode.Impulse);
             yield return new WaitForSeconds(0.5f);
+            FindObjectOfType<AudioManager>().Play("warp");
         }
         gravityDir = dir;
     }
