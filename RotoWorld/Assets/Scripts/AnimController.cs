@@ -497,7 +497,7 @@ public class AnimController : MonoBehaviour
     {
         if (other.gameObject.CompareTag("letter"))
         {
-            if (sceneName == "Level1")//just completed level 1
+            if (sceneName == "TrainingLevel")//just completed level 1
             {
                 GlobalCtrl.instance.levelsCompleted[0] = true;
                 GlobalCtrl.instance.dungeonMasterState = 1;
@@ -505,14 +505,14 @@ public class AnimController : MonoBehaviour
                 victoryText.text = "You have collected a letter!";
                 StartCoroutine(EndLevelCountdown());
             }
-            else if (sceneName == "Level2")//just completed level 2
+            else if (sceneName == "Level3")//just completed level 2
             {
                 GlobalCtrl.instance.levelsCompleted[1] = true;
                 Destroy(other.gameObject);
                 victoryText.text = "You have collected a letter!";
                 StartCoroutine(EndLevelCountdown());
             }
-            else if (sceneName == "TrainingLevel")
+            else if (sceneName == "Level2")
             {
                 GlobalCtrl.instance.levelsCompleted[2] = true;
                 Destroy(other.gameObject);
