@@ -2664,7 +2664,7 @@ Prefab:
     - target: {fileID: 114278022064156224, guid: 0a62a63e0594bb540b0f75c910aaa5f8,
         type: 2}
       propertyPath: reverseTime
-      value: 0
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 23942932190212990, guid: 0a62a63e0594bb540b0f75c910aaa5f8,
         type: 2}
