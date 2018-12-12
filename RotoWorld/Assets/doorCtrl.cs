@@ -19,15 +19,15 @@ public class doorCtrl : MonoBehaviour {
         {
             if(name == "level 1 entrance")
             {
-                UnityEngine.SceneManagement.SceneManager.LoadScene("Level1");
+                UnityEngine.SceneManagement.SceneManager.LoadScene("TrainingLevel");
             }
             if(name == "level 2 entrance")
             {
-                UnityEngine.SceneManagement.SceneManager.LoadScene("Level2");
+                UnityEngine.SceneManagement.SceneManager.LoadScene("Level3");
             }
             if (name == "level 3 entrance")
             {
-                UnityEngine.SceneManagement.SceneManager.LoadScene("TrainingLevel");
+                UnityEngine.SceneManagement.SceneManager.LoadScene("Level2");
             }
         }
     }
