@@ -186,6 +186,9 @@ public class AnimController : MonoBehaviour
         else
             jumping = false;
 
+        if (Input.GetKeyDown(KeyCode.Escape))
+            Application.Quit();
+
         if (IPressed)
         {
             Vector3 movement = new Vector3(-1, 0, 1);
