@@ -8,6 +8,7 @@ public class LetterCubeCtrl : MonoBehaviour {
     int levelIdx = 0;
     string objName;
     Renderer[] renderers;
+    BoxCollider[] colliders;
 
 
     void Start () {
@@ -25,10 +26,16 @@ public class LetterCubeCtrl : MonoBehaviour {
             levelIdx = 2;//training level index
         }
         this.GetComponent<Renderer>().enabled = false;
+        this.GetComponent<BoxCollider>().enabled = false;
         renderers = GetComponentsInChildren<Renderer>();
+        colliders = GetComponentsInChildren<BoxCollider>();
         foreach (var r in renderers)
         {
             r.enabled = false;
+        }
+        foreach (var c in colliders)
+        {
+            c.enabled = false;
         }
     }
 	
@@ -38,9 +45,14 @@ public class LetterCubeCtrl : MonoBehaviour {
         if(!this.GetComponent<Renderer>().enabled && GlobalCtrl.instance.levelsCompleted[levelIdx])
         {
             this.GetComponent<Renderer>().enabled = true;
-            foreach(var r in renderers)
+            this.GetComponent<BoxCollider>().enabled = true;
+            foreach (var r in renderers)
             {
                 r.enabled = true;
+            }
+            foreach (var c in colliders)
+            {
+                c.enabled = true;
             }
         }
 
