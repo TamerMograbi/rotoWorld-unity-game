@@ -14,7 +14,10 @@ public class MovingPlatformController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         currTime = reverseTime;
-
+        if (started)
+        {
+            StartCoroutine(Countdown());
+        }
 	}
 	
 	// Update is called once per frame

@@ -1987,6 +1987,12 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 224190499165083054, guid: 37e0041d74573d04595464b79fec4334,
     type: 2}
   m_PrefabInternal: {fileID: 1180815800}
+--- !u!114 &1180815802 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 114398991105268070, guid: 37e0041d74573d04595464b79fec4334,
+    type: 2}
+  m_PrefabInternal: {fileID: 1180815800}
+  m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
 --- !u!1 &1186569375
 GameObject:
   m_ObjectHideFlags: 0
@@ -2447,7 +2453,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!102 &1579092658
 TextMesh:
   serializedVersion: 3
@@ -2618,7 +2624,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4100050002017064, guid: 0a62a63e0594bb540b0f75c910aaa5f8, type: 2}
       propertyPath: m_LocalPosition.z
-      value: 17.99
+      value: 32.94
       objectReference: {fileID: 0}
     - target: {fileID: 4100050002017064, guid: 0a62a63e0594bb540b0f75c910aaa5f8, type: 2}
       propertyPath: m_LocalRotation.x
@@ -2648,7 +2654,7 @@ Prefab:
     - target: {fileID: 114278022064156224, guid: 0a62a63e0594bb540b0f75c910aaa5f8,
         type: 2}
       propertyPath: zspeed
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 114278022064156224, guid: 0a62a63e0594bb540b0f75c910aaa5f8,
         type: 2}
@@ -2658,7 +2664,7 @@ Prefab:
     - target: {fileID: 114278022064156224, guid: 0a62a63e0594bb540b0f75c910aaa5f8,
         type: 2}
       propertyPath: reverseTime
-      value: 0
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 23942932190212990, guid: 0a62a63e0594bb540b0f75c910aaa5f8,
         type: 2}
@@ -3088,7 +3094,7 @@ MonoBehaviour:
   cldr: {fileID: 0}
   verticalVelocity: 0
   isGrounded: 0
-  victoryText: {fileID: 0}
+  victoryText: {fileID: 1180815802}
 --- !u!65 &1772252292
 BoxCollider:
   m_ObjectHideFlags: 0
