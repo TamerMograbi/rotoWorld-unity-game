@@ -2624,7 +2624,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4100050002017064, guid: 0a62a63e0594bb540b0f75c910aaa5f8, type: 2}
       propertyPath: m_LocalPosition.z
-      value: 17.99
+      value: 32.94
       objectReference: {fileID: 0}
     - target: {fileID: 4100050002017064, guid: 0a62a63e0594bb540b0f75c910aaa5f8, type: 2}
       propertyPath: m_LocalRotation.x
@@ -2654,7 +2654,7 @@ Prefab:
     - target: {fileID: 114278022064156224, guid: 0a62a63e0594bb540b0f75c910aaa5f8,
         type: 2}
       propertyPath: zspeed
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 114278022064156224, guid: 0a62a63e0594bb540b0f75c910aaa5f8,
         type: 2}
@@ -2664,7 +2664,7 @@ Prefab:
     - target: {fileID: 114278022064156224, guid: 0a62a63e0594bb540b0f75c910aaa5f8,
         type: 2}
       propertyPath: reverseTime
-      value: 4
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 23942932190212990, guid: 0a62a63e0594bb540b0f75c910aaa5f8,
         type: 2}
