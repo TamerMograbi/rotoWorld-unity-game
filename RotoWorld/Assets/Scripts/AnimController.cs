@@ -36,6 +36,7 @@ public class AnimController : MonoBehaviour
     GameObject rock;
     float gravityRotSpeed;
     string sceneName;
+    bool doneJumping;
 
     public Text victoryText;
 
@@ -65,6 +66,7 @@ public class AnimController : MonoBehaviour
         KPressed = false;
         LPressed = false;
         sprinting = false;
+        doneJumping = false;
         gravityRotSpeed = 0.05f;
 
         cldr = GetComponent<BoxCollider>();
@@ -96,7 +98,6 @@ public class AnimController : MonoBehaviour
     bool isLeftRotation()
     {
         Vector3 rotV = transform.rotation.eulerAngles;
-        Debug.Log("y = " + rotV.y + " z = " + rotV.z);
         return Mathf.Abs(rotV.y - 0) < 2f && ((Mathf.Abs(rotV.z - -90) < 2f) || (Mathf.Abs(rotV.z - 270) < 2f));
     }
     bool isRightRotation()
@@ -178,13 +179,18 @@ public class AnimController : MonoBehaviour
             sprinting = true;
         else
             sprinting = false;
+
         if (Input.GetKeyDown(KeyCode.Space) && IsGrounded())
         {
             StartCoroutine(JumpTimer());
             jumping = true;
+
         }
-        else
+        else if(doneJumping)
+        {
             jumping = false;
+            doneJumping = false;
+        }
 
         if (Input.GetKeyDown(KeyCode.Escape))
             Application.Quit();
@@ -312,6 +318,7 @@ public class AnimController : MonoBehaviour
                 {
                     FindObjectOfType<AudioManager>().Play("jump");
                     rb.AddForce(getJumpDirectionVector() * (sprinting ? jumpAccel * 1.5f : jumpAccel), ForceMode.Impulse);
+                    doneJumping = true;
                 }
             }
             rb.AddForce(getCurrentGravity());
